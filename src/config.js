@@ -162,6 +162,7 @@ c3_chart_internal_fn.getDefaultConfig = function () {
         pie_label_format: undefined,
         pie_label_threshold: 0.05,
         pie_expand: true,
+        explodeRadius: 0,
         // gauge
         gauge_label_show: true,
         gauge_label_format: undefined,

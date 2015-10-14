@@ -10,6 +10,9 @@ var isValue = c3_chart_internal_fn.isValue = function (v) {
     isUndefined = c3_chart_internal_fn.isUndefined = function (v) {
         return typeof v === 'undefined';
     },
+    isNull = c3_chart_internal_fn.isNull = function(v){
+        return v === null;
+    },
     isDefined = c3_chart_internal_fn.isDefined = function (v) {
         return typeof v !== 'undefined';
     },

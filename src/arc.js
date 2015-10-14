@@ -11,8 +11,10 @@ c3_chart_internal_fn.initPie = function () {
 c3_chart_internal_fn.updateRadius = function () {
     var $$ = this, config = $$.config,
         w = config.gauge_width || config.donut_width;
+
     $$.radiusExpanded = Math.min($$.arcWidth, $$.arcHeight) / 2;
     $$.radius = $$.radiusExpanded * 0.95;
+    $$.radius -= config.explodeRadius;
     $$.innerRadiusRatio = w ? ($$.radius - w) / $$.radius : 0.6;
     $$.innerRadius = $$.hasType('donut') || $$.hasType('gauge') ? $$.radius * $$.innerRadiusRatio : 0;
 };
@@ -260,47 +262,8 @@ c3_chart_internal_fn.redrawArc = function (duration, durationForExit, withTransf
             this._current = d;
         });
     mainArc
-        .attr("transform", function (d) { return !$$.isGaugeType(d.data) && withTransform ? "scale(0)" : ""; })
+        .attr("transform", withTransform ? "scale(0)" : $$.wrapExplode())
         .style("opacity", function (d) { return d === this._current ? 0 : 1; })
-        .on('mouseover', config.interaction_enabled ? function (d) {
-            var updated, arcData;
-            if ($$.transiting) { // skip while transiting
-                return;
-            }
-            updated = $$.updateAngle(d);
-            arcData = $$.convertToArcData(updated);
-            // transitions
-            $$.expandArc(updated.data.id);
-            $$.api.focus(updated.data.id);
-            $$.toggleFocusLegend(updated.data.id, true);
-            $$.config.data_onmouseover(arcData, this);
-        } : null)
-        .on('mousemove', config.interaction_enabled ? function (d) {
-            var updated = $$.updateAngle(d),
-                arcData = $$.convertToArcData(updated),
-                selectedData = [arcData];
-            $$.showTooltip(selectedData, this);
-        } : null)
-        .on('mouseout', config.interaction_enabled ? function (d) {
-            var updated, arcData;
-            if ($$.transiting) { // skip while transiting
-                return;
-            }
-            updated = $$.updateAngle(d);
-            arcData = $$.convertToArcData(updated);
-            // transitions
-            $$.unexpandArc(updated.data.id);
-            $$.api.revert();
-            $$.revertLegend();
-            $$.hideTooltip();
-            $$.config.data_onmouseout(arcData, this);
-        } : null)
-        .on('click', config.interaction_enabled ? function (d, i) {
-            var updated = $$.updateAngle(d),
-                arcData = $$.convertToArcData(updated);
-            if ($$.toggleShape) { $$.toggleShape(this, arcData, i); }
-            $$.config.data_onclick.call($$.api, arcData, this);
-        } : null)
         .each(function () { $$.transiting = true; })
         .transition().duration(duration)
         .attrTween("d", function (d) {
@@ -308,12 +271,6 @@ c3_chart_internal_fn.redrawArc = function (duration, durationForExit, withTransf
             if (! updated) {
                 return function () { return "M 0 0"; };
             }
-            //                if (this._current === d) {
-            //                    this._current = {
-            //                        startAngle: Math.PI*2,
-            //                        endAngle: Math.PI*2,
-            //                    };
-            //                }
             if (isNaN(this._current.endAngle)) {
                 this._current.endAngle = this._current.startAngle;
             }
@@ -325,7 +282,7 @@ c3_chart_internal_fn.redrawArc = function (duration, durationForExit, withTransf
                 return $$.getArc(interpolated, true);
             };
         })
-        .attr("transform", withTransform ? "scale(1)" : "")
+        .attr("transform", withTransform ? "scale(1)" : $$.wrapExplode())
         .style("fill", function (d) {
             return $$.levelColor ? $$.levelColor(d.data.values[0].value) : $$.color(d.data.id);
         }) // Where gauge reading color would receive customization.
@@ -347,29 +304,63 @@ c3_chart_internal_fn.redrawArc = function (duration, durationForExit, withTransf
     main.select('.' + CLASS.chartArcsTitle)
         .style("opacity", $$.hasType('donut') || $$.hasType('gauge') ? 1 : 0);
 
-    if ($$.hasType('gauge')) {
-        $$.arcs.select('.' + CLASS.chartArcsBackground)
-            .attr("d", function () {
-                var d = {
-                    data: [{value: config.gauge_max}],
-                    startAngle: -1 * (Math.PI / 2),
-                    endAngle: Math.PI / 2
-                };
-                return $$.getArc(d, true, true);
-            });
-        $$.arcs.select('.' + CLASS.chartArcsGaugeUnit)
-            .attr("dy", ".75em")
-            .text(config.gauge_label_show ? config.gauge_units : '');
-        $$.arcs.select('.' + CLASS.chartArcsGaugeMin)
-            .attr("dx", -1 * ($$.innerRadius + (($$.radius - $$.innerRadius) / 2)) + "px")
-            .attr("dy", "1.2em")
-            .text(config.gauge_label_show ? config.gauge_min : '');
-        $$.arcs.select('.' + CLASS.chartArcsGaugeMax)
-            .attr("dx", $$.innerRadius + (($$.radius - $$.innerRadius) / 2) + "px")
-            .attr("dy", "1.2em")
-            .text(config.gauge_label_show ? config.gauge_max : '');
+    if($$.config.hasSubs || $$.config.isSub){
+        $$.buffer.onlastfinish("draw-lines", function(){
+            $$.ed3Internal.redrawLinesOnBoth();
+            $$.ed3Internal.redrawLinesOnBoth();
+        });
     }
+
 };
+
+c3_chart_internal_fn.getAngle = function(d){
+    var $$ = this; 
+    $$.config.newd = d;
+};
+
+c3_chart_internal_fn.wrapExplode = function(){
+    var $$ = this; 
+    explode.offset = $$.config.explodeRadius;
+    
+    explode.updateAngle = $$.updateAngle.bind($$);
+    explode.turn = $$.api.turn.bind($$.api);
+    explode.config = $$.config;
+    explode.getAngle = $$.getAngle.bind($$);
+    return explode;
+};
+
+function explode(d, index) {
+    d = explode.updateAngle(d);
+    if(isNull(d)){
+        return "";
+    }
+    var offset = explode.offset;
+    
+    var angle = (d.startAngle + d.endAngle) / 2;
+    var xOff = Math.sin(angle) * offset;
+    var yOff = -Math.cos(angle) * offset;
+    
+    if(index === 0 && explode.config.hasSubs){
+        if(!explode.config.turned){
+            
+            explode.getAngle(d);
+            
+            var turnAngle = ((d.startAngle - d.endAngle) / 2 % (2 * Math.PI)) + toRadians(90);
+            explode.turn({
+                radians: turnAngle
+            });
+            explode.config.turned = true;
+        }
+    }
+
+    if(!offset){
+        return "translate(0, 0)";
+    }
+
+    return 'translate(' + xOff + ',' + yOff +')';
+}
+
+
 c3_chart_internal_fn.initGauge = function () {
     var arcs = this.arcs;
     if (this.hasType('gauge')) {
