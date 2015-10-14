@@ -51,24 +51,25 @@ c3_chart_internal_fn.getSubYScale = function (id) {
 };
 c3_chart_internal_fn.updateScales = function () {
     var $$ = this, config = $$.config,
-        forInit = !$$.x;
+        forInit = !$$.x;                
     // update edges
-    $$.xMin = config.axis_rotated ? 1 : 0;
-    $$.xMax = config.axis_rotated ? $$.height : $$.width;
+    $$.xMin = config.axis_rotated ? $$.height : 0;
+    $$.xMax = config.axis_rotated ? 0 : $$.width;
+
     $$.yMin = config.axis_rotated ? 0 : $$.height;
     $$.yMax = config.axis_rotated ? $$.width : 1;
-    $$.subXMin = $$.xMin;
-    $$.subXMax = $$.xMax;
+    $$.subXMin = $$.xMin;           
+    $$.subXMax = $$.xMax;           
     $$.subYMin = config.axis_rotated ? 0 : $$.height2;
     $$.subYMax = config.axis_rotated ? $$.width2 : 1;
     // update scales
     $$.x = $$.getX($$.xMin, $$.xMax, forInit ? undefined : $$.x.orgDomain(), function () { return $$.xAxis.tickOffset(); });
     $$.y = $$.getY($$.yMin, $$.yMax, forInit ? config.axis_y_default : $$.y.domain());
     $$.y2 = $$.getY($$.yMin, $$.yMax, forInit ? config.axis_y2_default : $$.y2.domain());
-    $$.subX = $$.getX($$.xMin, $$.xMax, $$.orgXDomain, function (d) { return d % 1 ? 0 : $$.subXAxis.tickOffset(); });
+    $$.subX = $$.getX($$.xMin, $$.xMax, $$.orgXDomain, function (d) { return d % 1 ? 0 : $$.subXAxis.tickOffset(); }); 
     $$.subY = $$.getY($$.subYMin, $$.subYMax, forInit ? config.axis_y_default : $$.subY.domain());
     $$.subY2 = $$.getY($$.subYMin, $$.subYMax, forInit ? config.axis_y2_default : $$.subY2.domain());
-    // update axes
+    // update axes 
     $$.xAxisTickFormat = $$.getXAxisTickFormat();
     $$.xAxisTickValues = $$.getXAxisTickValues();
     $$.yAxisTickValues = $$.getYAxisTickValues();
@@ -83,7 +84,7 @@ c3_chart_internal_fn.updateScales = function () {
     if (!forInit) {
         if ($$.brush) { $$.brush.scale($$.subX); }
         if (config.zoom_enabled) { $$.zoom.scale($$.x); }
-    }
+    }              
     // update for arc
     if ($$.updateArc) { $$.updateArc(); }
 };
