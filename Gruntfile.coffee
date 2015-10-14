@@ -53,6 +53,7 @@ module.exports = (grunt) ->
               'src/color.js',
               'src/format.js',
               'src/cache.js',
+              'src/callbacks.js',
               'src/class.js',
               'src/util.js',
               'src/api.focus.js',
