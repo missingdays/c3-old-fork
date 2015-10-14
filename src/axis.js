@@ -370,3 +370,48 @@ c3_chart_internal_fn.redrawAxis = function (transitions, isHidden) {
         $$.rotateTickText($$.axes.subx, transitions.axisSubX, config.axis_x_tick_rotate);
     }
 };
+
+c3_chart_internal_fn.tuneAxis = function(sync, callback){
+    var $$ = this;
+    $$.pushCallback(callback);
+
+    if(!$$.config.stacked){
+        
+        var apply = function(){
+
+            var minmax = $$.findMinMax();
+
+            var sizesX;
+            if($$.config.is_xy){
+                sizesX = axisCalc.getAbscissa($$.config.ed3Type, minmax.minX, minmax.maxX);
+            }
+            var sizesY = axisCalc.getAxisData(minmax.minY, minmax.maxY);
+
+            $$.api.axis.range({
+                min: {
+                    x: sizesX ? sizesX.min : undefined,
+                    y: sizesY.min
+                },
+                max: {
+                    x: sizesX ? sizesX.max : undefined,
+                    y: sizesY.max
+                }
+            });
+
+            // Since we can overwrite cachedRedraw callback
+            $$.resolveCallbacks();
+
+        };
+
+        if(sync){
+            apply();
+        } else {
+            $$.buffer.onlastfinish("tune-axis" + $$.config.ed3Type, apply);
+            
+            // we don't need to redraw since tune axis does it
+            $$.buffer.onlastfinish("cached-redraw" + $$.config.ed3Type, function(){});
+        }
+    }
+
+};
+

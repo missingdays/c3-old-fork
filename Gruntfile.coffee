@@ -22,6 +22,7 @@ module.exports = (grunt) ->
                 return src
             src: [
               'src/head.js',
+              'src/buffer.js',
               'src/core.js',
               'src/config.js',
               'src/scale.js',
