@@ -56,6 +56,7 @@ module.exports = (grunt) ->
               'src/class.js',
               'src/util.js',
               'src/api.focus.js',
+              'src/api.title.js',
               'src/api.show.js',
               'src/api.zoom.js',
               'src/api.load.js',
@@ -105,7 +106,7 @@ module.exports = (grunt) ->
             src: 'c3.css'
             dest: 'c3.min.css'
 
-    grunt.registerTask 'default', ['concat', 'test', 'posttest']
+    grunt.registerTask 'default', ['jshint', 'concat', 'test', 'posttest']
     grunt.registerTask 'test', ['jasmine']
-    grunt.registerTask 'build', ['concat', 'posttest']
+    grunt.registerTask 'build', ['jshint', 'concat', 'posttest']
     grunt.registerTask 'posttest', ['cssmin', 'uglify']
