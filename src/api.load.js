@@ -1,5 +1,8 @@
 c3_chart_fn.load = function (args) {
     var $$ = this.internal, config = $$.config;
+
+    $$.config.turned = false;
+
     // update xs if specified
     if (args.xs) {
         $$.addXs(args.xs);
@@ -87,33 +90,27 @@ c3_chart_fn.loadColumns = function(cols){
 
 c3_chart_fn.setValue = function(id, i, value){
     var $$ = this.internal;
-    var column = $$.api.getDataById(id);
+    var t = $$.api.data(id)[0];
 
-    if(isUndefined(column)){
-        throw new Error("Setting value to non-existing sequence " + id);
-    }
-
-    if(isUndefined(column[i])){
+    if(!t.values[i]){
         $$.api.appendToColumn([id, value]);
     } else {
-        column[i] = value;
-        $$.api.loadColumns([[id].concat(column)]);
+        t.values[i].value = value;
+        $$.tuneAxis();
     }
 };
 
 c3_chart_fn.getValue = function(id, i){
     var $$ = this.internal;
 
-    var column = $$.api.getDataById(id);
-    if(isUndefined(column)){
+    var t = $$.api.data(id)[0];
+
+    if(!t){
         return undefined;
     }
-
-    var v = column[i];
-
-    if(isUndefined(v)){
+    if(!t.values[i]){
         return undefined;
     }
+    return t.values[i].value;
 
-    return v.value;
 };
