@@ -578,7 +578,7 @@ c3_chart_internal_fn.getAxisData =  function(min, max, isAbscissa) {
     return axis;
 };
 
-c3.chart.internal.fn.findMinMax = function () {
+c3_chart_internal_fn.findMinMax = function () {
     var $$ = this, data = $$.data.targets;
     var minY, maxY, minX, maxX;
     var i,j, id;
@@ -650,5 +650,43 @@ c3.chart.internal.fn.findMinMax = function () {
     });
 
     return {minY: minY, maxY: maxY, minX: minX, maxX: maxX};
+};
+
+c3_chart_fn.axisLabelX = function(label) {
+    var $$ = this.internal;
+
+    if (!arguments.length) {
+        if (isUndefined($$.config.axis_x_label))
+            return undefined;
+        return {text: $$.config.axis_x_label.text, position: $$.config.axis_x_label.position};
+    }
+
+    if(isUndefined(label)){
+        $$.config.axis_x_label = {};
+    } else {
+        $$.config.axis_x_label.text = label.text;
+        $$.config.axis_x_label.position = label.position;
+    }
+
+    $$.cachedRedraw({withLegend: true});
+};
+
+c3_chart_fn.axisLabelY = function(label) {
+    var $$ = this.internal;
+
+    if (!arguments.length) {
+        if (isUndefined($$.config.axis_y_label))
+            return undefined;
+        return {text: $$.config.axis_y_label.text, position: $$.config.axis_y_label.position};
+    }
+
+    if(isUndefined(label)){
+        $$.config.axis_y_label = {};
+    } else {
+        $$.config.axis_y_label.text = label.text;
+        $$.config.axis_y_label.position = label.position;
+    }
+
+    $$.cachedRedraw({withLegend: true});
 };
 
