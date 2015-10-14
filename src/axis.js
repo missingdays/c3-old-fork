@@ -279,40 +279,7 @@ c3_chart_internal_fn.rotateTickText = function (axis, transition, rotate) {
 };
 
 c3_chart_internal_fn.getMaxTickWidth = function (id, withoutRecompute) {
-    var $$ = this, config = $$.config,
-        maxWidth = 0, targetsToShow, scale, axis, body, svg;
-    if (withoutRecompute && $$.currentMaxTickWidths[id]) {
-        return $$.currentMaxTickWidths[id];
-    }
-    if ($$.svg) {
-        targetsToShow = $$.filterTargetsToShow($$.data.targets);
-        if (id === 'y') {
-            scale = $$.y.copy().domain($$.getYDomain(targetsToShow, 'y'));
-            axis = $$.getYAxis(scale, $$.yOrient, config.axis_y_tick_format, $$.yAxisTickValues);
-        } else if (id === 'y2') {
-            scale = $$.y2.copy().domain($$.getYDomain(targetsToShow, 'y2'));
-            axis = $$.getYAxis(scale, $$.y2Orient, config.axis_y2_tick_format, $$.y2AxisTickValues);
-        } else {
-            scale = $$.x.copy().domain($$.getXDomain(targetsToShow));
-            axis = $$.getXAxis(scale, $$.xOrient, $$.xAxisTickFormat, $$.xAxisTickValues);
-            $$.updateXAxisTickValues(targetsToShow, axis);
-        }
-        body = this.d3.select('body').classed('c3', true);
-        svg = body.append('svg').style('visibility', 'hidden');
-        svg.append('g').call(axis).each(function () {
-            $$.d3.select(this).selectAll('text tspan').each(function () {
-                var box = this.getBoundingClientRect();
-                if (box.left >= 0 && maxWidth < box.width) { maxWidth = box.width; }
-            });
-        });
-        // TODO: time lag to get maxWidth
-        window.setTimeout(function () {
-            svg.remove();
-        }, 100);
-        body.classed('c3', false);
-    }
-    $$.currentMaxTickWidths[id] = maxWidth <= 0 ? $$.currentMaxTickWidths[id] : maxWidth;
-    return $$.currentMaxTickWidths[id];
+    return 10;
 };
 
 c3_chart_internal_fn.updateAxisLabels = function (withTransition) {
