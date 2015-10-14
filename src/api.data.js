@@ -33,4 +33,24 @@ c3_chart_fn.getDataById = function(seqId){
         return undefined;
     }
     return t.values;
-}
+};
+
+c3_chart_fn.dataType = function(id) {
+    var $$ = this.internal;
+    return $$.config.data_types[id];
+};
+
+c3_chart_fn.dataColor = function(id, value) {
+    var $$ = this;
+    if (arguments.length < 2)
+        return $$.data.colors()[id];
+    $$.data.colors()[id] = value;
+};
+
+c3_chart_fn.dataHeader = function(id, value) {
+    var $$ = this.internal;
+    if (arguments.length < 2)
+        return $$.api.data.names()[id];
+    $$.api.data.names()[id] = value;
+};
+
