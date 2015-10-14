@@ -376,39 +376,42 @@ c3_chart_internal_fn.tuneAxis = function(sync, callback){
 
     $$.pushCallback(callback);
 
-    if(!$$.config.stacked){
+    // if we don't need to tune
+    if($$.config.stacked){
+        $$.cachedRedraw();
+        return;
+    }
         
-        var apply = function(){
+    var apply = function(){
 
-            var minmax = $$.findMinMax();
+        var minmax = $$.findMinMax();
 
-            var sizesX;
-            if($$.config.is_xy){
-                sizesX = $$.getAbscissa($$.config.ed3Type, minmax.minX, minmax.maxX);
-            }
-            var sizesY = $$.getAxisData(minmax.minY, minmax.maxY);
-
-            $$.api.axis.range({
-                min: {
-                    x: sizesX ? sizesX.min : undefined,
-                    y: sizesY.min
-                },
-                max: {
-                    x: sizesX ? sizesX.max : undefined,
-                    y: sizesY.max
-                }
-            });
-
-            $$.resolveCallbacks();
-
-        };
-
-        if(sync){
-            apply();
-        } else {
-            $$.buffer.onlastfinish("tune-axis", apply);
-            $$.buffer.onlastfinish("cached-redraw", function(){});
+        var sizesX;
+        if($$.config.is_xy){
+            sizesX = $$.getAbscissa($$.config.ed3Type, minmax.minX, minmax.maxX);
         }
+        var sizesY = $$.getAxisData(minmax.minY, minmax.maxY);
+
+        $$.api.axis.range({
+            min: {
+                x: sizesX ? sizesX.min : undefined,
+                y: sizesY.min
+            },
+            max: {
+                x: sizesX ? sizesX.max : undefined,
+                y: sizesY.max
+            }
+        });
+
+        $$.resolveCallbacks();
+
+    };
+
+    if(sync){
+        apply();
+    } else {
+        $$.buffer.onlastfinish("tune-axis", apply);
+        $$.buffer.onlastfinish("cached-redraw", function(){});
     }
 
 };

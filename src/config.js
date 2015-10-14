@@ -192,7 +192,9 @@ c3_chart_internal_fn.getDefaultConfig = function () {
         },
         tooltip_init_show: false,
         tooltip_init_x: 0,
-        tooltip_init_position: {top: '0px', left: '50px'}
+        tooltip_init_position: {top: '0px', left: '50px'},
+        // caching
+        shouldCache: true
     };
 
     Object.keys(this.additionalConfig).forEach(function (key) {

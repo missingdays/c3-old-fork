@@ -32,7 +32,7 @@ c3.chart.internal.fn.cachedRedraw = function(options, callback){
 
     $$.pushCallback(callback);
 
-    if($$.shouldCache){
+    if($$.config.shouldCache){
         if(!$$.buffer.has("tune-axis")){
             $$.buffer.onlastfinish("cached-redraw",
                 function(){
