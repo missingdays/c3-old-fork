@@ -1,11 +1,14 @@
 module.exports = (grunt) ->
-    require('load-grunt-tasks') grunt, pattern: 'grunt-contrib-*'
+    require('load-grunt-tasks') grunt, pattern: ['grunt-contrib-*', 'grunt-sass']
 
     grunt.initConfig
         watch:
           concat:
             tasks: 'concat'
             files: ['src/*.js']
+          sass:
+            tasks: 'sass'
+            files: ['src/scss/*.scss']
 
         concat:
           dist:
@@ -37,6 +40,7 @@ module.exports = (grunt) ->
               'src/grid.js',
               'src/tooltip.js',
               'src/legend.js',
+              'src/title.js',
               'src/axis.js',
               'src/clip.js',
               'src/arc.js',
@@ -69,6 +73,7 @@ module.exports = (grunt) ->
               'src/api.chart.js',
               'src/api.tooltip.js',
               'src/c3.axis.js',
+              'src/ua.js',
               'src/polyfill.js',
               'src/tail.js'
             ]
@@ -87,7 +92,7 @@ module.exports = (grunt) ->
               specs: 'spec/*-spec.js'
               helpers: 'spec/*-helper.js'
               styles: 'c3.css'
-              vendor: 'http://d3js.org/d3.v3.min.js'
+              vendor: 'bower_components/d3/d3.js'
 
         uglify:
           c3:
@@ -99,4 +104,7 @@ module.exports = (grunt) ->
             src: 'c3.css'
             dest: 'c3.min.css'
 
-    grunt.registerTask 'default', ['concat', 'jshint', 'jasmine', 'cssmin', 'uglify']
+    grunt.registerTask 'default', ['concat', 'test', 'posttest']
+    grunt.registerTask 'test', ['jasmine']
+    grunt.registerTask 'build', ['concat', 'posttest']
+    grunt.registerTask 'posttest', ['cssmin', 'uglify']

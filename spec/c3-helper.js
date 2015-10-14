@@ -41,3 +41,10 @@ function initChart(chart, args, done) {
     return chart;
 }
 typeof initChart !== 'undefined';
+
+function wait(f){
+    'use strict';
+    setTimeout(f, 500);
+}
+
+typeof wait !== 'undefined';

@@ -5952,6 +5952,74 @@
         });
     };
 
+    c3_chart_fn.appendToColumn = function(col) {
+        var $$ = this.internal;
+        var column = $$.api.getDataById(col[0]);
+
+        if(!isUndefined(column)){
+            for(var i = column.length - 1; i > -1; i--){
+                    col.splice(1, 0, column[i].value);
+            }
+        }
+
+        $$.api.loadColumns([col]);
+    };
+
+    c3_chart_fn.popFromColumn = function(id, amount){
+        var $$ = this.internal;
+        var columns = $$.api.getDataById(id);
+
+        if(isUndefined(columns)){
+            throw new Error("Popping values from non-existing sequence");
+        }
+
+        for(var i = 0; i < amount; i++){
+            columns.pop();
+        }
+
+        $$.api.loadColumns(columns);
+    };
+
+    c3_chart_fn.loadColumns = function(cols){
+        var $$ = this.internal;
+        $$.api.load({
+            columns: cols
+        });
+    };
+
+    c3_chart_fn.setValue = function(id, i, value){
+        var $$ = this.internal;
+        var column = $$.api.getDataById(id);
+
+        if(isUndefined(column)){
+            throw new Error("Setting value to non-existing sequence " + id);
+        }
+
+        if(isUndefined(column[i])){
+            $$.api.appendToColumn([id, value]);
+        } else {
+            column[i] = value;
+            $$.api.loadColumns([[id].concat(column)]);
+        }
+    };
+
+    c3_chart_fn.getValue = function(id, i){
+        var $$ = this.internal;
+
+        var column = $$.api.getDataById(id);
+        if(isUndefined(column)){
+            return undefined;
+        }
+
+        var v = column[i];
+
+        if(isUndefined(v)){
+            return undefined;
+        }
+
+        return v.value;
+    };
+
     c3_chart_fn.flow = function (args) {
         var $$ = this.internal,
             targets, data, notfoundIds = [], orgDataCount = $$.getMaxDataCount(),
@@ -6428,6 +6496,15 @@
         return this.internal.updateDataAttributes('axes', axes);
     };
 
+    c3_chart_fn.getDataById = function(seqId){
+        var $$ = this.internal;
+        var t = $$.api.data(seqId)[0];
+        if(isUndefined(t)) {
+            return undefined;
+        }
+        return t.values;
+    }
+
     c3_chart_fn.category = function (i, category) {
         var $$ = this.internal, config = $$.config;
         if (arguments.length > 1) {
@@ -6544,6 +6621,24 @@
         var $$ = this.internal, config = $$.config;
         config.size_width = size ? size.width : null;
         config.size_height = size ? size.height : null;
+        this.flush();
+    };
+
+    c3_chart_fn.width = function(width){
+        var $$ = this.internal;
+        if(isUndefined(width)){
+            return $$.getCurrentWidth();
+        }
+        $$.config.size_width = width;
+        this.flush();
+    };
+
+    c3_chart_fn.height = function(height){
+        var $$ = this.internal;
+        if(isUndefined(height)){
+            return $$.getCurrentHeight();
+        }
+        $$.config.size_height = height;
         this.flush();
     };
 

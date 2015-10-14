@@ -170,63 +170,9 @@ describe('c3 api load', function () {
                 done();
             }, 500);
         });
-
-        it('should defocus multiple targets after focused', function (done) {
-            var main = chart.internal.main,
-                legend = chart.internal.legend;
-            chart.focus();
-            setTimeout(function () {
-                chart.defocus(['data1', 'data2']);
-                setTimeout(function () {
-                    var targets = {
-                        data1: main.select('.c3-chart-line.c3-target.c3-target-data1'),
-                        data2: main.select('.c3-chart-line.c3-target.c3-target-data2'),
-                        data3: main.select('.c3-chart-line.c3-target.c3-target-data3')
-                    },
-                    legendItems = {
-                        data1: legend.select('.c3-legend-item-data1'),
-                        data2: legend.select('.c3-legend-item-data2'),
-                        data3: legend.select('.c3-legend-item-data3')
-                    };
-                    expect(targets.data1.classed('c3-defocused')).toBeTruthy();
-                    expect(targets.data2.classed('c3-defocused')).toBeTruthy();
-                    expect(targets.data3.classed('c3-defocused')).toBeFalsy();
-                    expect(legendItems.data1.classed('c3-legend-item-focused')).toBeFalsy();
-                    expect(legendItems.data2.classed('c3-legend-item-focused')).toBeFalsy();
-                    expect(legendItems.data3.classed('c3-legend-item-focused')).toBeTruthy();
-                    expect(+legendItems.data1.style('opacity')).toBeCloseTo(0.3);
-                    expect(+legendItems.data2.style('opacity')).toBeCloseTo(0.3);
-                    expect(+legendItems.data3.style('opacity')).toBeCloseTo(1);
-                    done();
-                }, 500);
-            });
-        }, 500);
-
     });
 
     describe('revert', function () {
-
-        it('should revert all targets after focus', function (done) {
-            var main = chart.internal.main,
-                legend = chart.internal.legend;
-            chart.focus();
-            setTimeout(function () {
-                chart.revert();
-                setTimeout(function () {
-                    var targets = main.select('.c3-chart-line.c3-target'),
-                        legendItems = legend.select('.c3-legend-item');
-                    targets.each(function () {
-                        var line = d3.select(this);
-                        expect(line.classed('c3-focused')).toBeFalsy();
-                    });
-                    legendItems.each(function () {
-                        var item = d3.select(this);
-                        expect(+item.style('opacity')).toBeCloseTo(1);
-                    });
-                    done();
-                }, 500);
-            }, 500);
-        });
 
         it('should revert all targets after defocus', function (done) {
             var main = chart.internal.main,

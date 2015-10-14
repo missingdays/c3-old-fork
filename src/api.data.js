@@ -25,3 +25,12 @@ c3_chart_fn.data.colors = function (colors) {
 c3_chart_fn.data.axes = function (axes) {
     return this.internal.updateDataAttributes('axes', axes);
 };
+
+c3_chart_fn.getDataById = function(seqId){
+    var $$ = this.internal;
+    var t = $$.api.data(seqId)[0];
+    if(isUndefined(t)) {
+        return undefined;
+    }
+    return t.values;
+}

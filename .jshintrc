@@ -22,7 +22,9 @@
         "describe": false,
         "beforeEach": false,
         "it": false,
-        "expect": false 
+        "expect": false,
+        "d3": false,
+        "wait": false
     }
 
 }
