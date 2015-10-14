@@ -278,7 +278,7 @@ c3_chart_internal_fn.rotateTickText = function (axis, transition, rotate) {
         .attr('dx', this.xForRotatedTickText(rotate));
 };
 
-c3_chart_internal_fn.getMaxTickWidth = function (id, withoutRecompute) {
+c3_chart_internal_fn.getMaxTickWidth = function () {
     return 10;
 };
 

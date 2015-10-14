@@ -43,3 +43,17 @@ c3_chart_fn.destroy = function () {
 
     return null;
 };
+
+c3_chart_fn.bgcolor = function(value) {
+    var $$ = this.internal;         
+    var svg = $$.svg[0][0];         
+    if (!arguments.length){         
+        if(svg.style.backgroundColor){  
+            return svg.style.backgroundColor;
+        } else {   
+            return undefined;               
+        }
+    } else {
+        svg.style.backgroundColor = value;
+    }              
+};  
