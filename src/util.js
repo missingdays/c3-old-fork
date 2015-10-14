@@ -43,4 +43,11 @@ var isValue = c3_chart_internal_fn.isValue = function (v) {
             items = [path.pathSegList.getItem(0), path.pathSegList.getItem(1)],
             minX = items[0].x, minY = Math.min(items[0].y, items[1].y);
         return {x: minX, y: minY, width: box.width, height: box.height};
+    },
+    toRadians = function(degrees){
+        return degrees * (Math.PI / 180);
+    },
+    toDegrees = function(radians){
+        return radians * (180 / Math.PI);
     };
+

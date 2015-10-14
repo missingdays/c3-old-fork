@@ -57,3 +57,25 @@ c3_chart_fn.bgcolor = function(value) {
         svg.style.backgroundColor = value;
     }              
 };  
+
+c3.chart.fn.turn = function(options){
+    var $$ = this.internal;         
+    var turnAngle;
+
+    if(!options){
+        return;  
+    }
+
+    if(options.radians){            
+        turnAngle = options.radians;    
+    } else {     
+        turnAngle = toRadians(options.degrees);
+    }            
+
+    if(options.relative){           
+        $$.config.turnAngle += turnAngle;
+    } else {     
+        $$.config.turnAngle = turnAngle;
+    }
+};
+

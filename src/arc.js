@@ -45,6 +45,12 @@ c3_chart_internal_fn.updateAngle = function (d) {
         d.startAngle = -1 * (Math.PI / 2);
         d.endAngle = d.startAngle + gTic * gValue;
     }
+
+    if(config.turnAngle){
+        d.endAngle += config.turnAngle;
+        d.startAngle += config.turnAngle;
+    }
+
     return found ? d : null;
 };
 
