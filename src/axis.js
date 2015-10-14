@@ -373,6 +373,7 @@ c3_chart_internal_fn.redrawAxis = function (transitions, isHidden) {
 
 c3_chart_internal_fn.tuneAxis = function(sync, callback){
     var $$ = this;
+
     $$.pushCallback(callback);
 
     if(!$$.config.stacked){
@@ -383,9 +384,9 @@ c3_chart_internal_fn.tuneAxis = function(sync, callback){
 
             var sizesX;
             if($$.config.is_xy){
-                sizesX = axisCalc.getAbscissa($$.config.ed3Type, minmax.minX, minmax.maxX);
+                sizesX = $$.getAbscissa($$.config.ed3Type, minmax.minX, minmax.maxX);
             }
-            var sizesY = axisCalc.getAxisData(minmax.minY, minmax.maxY);
+            var sizesY = $$.getAxisData(minmax.minY, minmax.maxY);
 
             $$.api.axis.range({
                 min: {
@@ -398,7 +399,6 @@ c3_chart_internal_fn.tuneAxis = function(sync, callback){
                 }
             });
 
-            // Since we can overwrite cachedRedraw callback
             $$.resolveCallbacks();
 
         };
@@ -406,12 +406,176 @@ c3_chart_internal_fn.tuneAxis = function(sync, callback){
         if(sync){
             apply();
         } else {
-            $$.buffer.onlastfinish("tune-axis" + $$.config.ed3Type, apply);
-            
-            // we don't need to redraw since tune axis does it
-            $$.buffer.onlastfinish("cached-redraw" + $$.config.ed3Type, function(){});
+            $$.buffer.onlastfinish("tune-axis", apply);
+            $$.buffer.onlastfinish("cached-redraw", function(){});
         }
     }
 
 };
+
+function log10(n) {
+    return Math.log(n) / Math.log(10);
+}
+
+function log(n, m) {
+    return Math.log(n) / Math.log(m);
+}
+
+c3_chart_internal_fn.getAbscissa =  function(type, min, max) {
+    var $$ = this; 
+    var axis = {};
+
+    switch(type) {
+        case 'area':
+        case 'area-stacked':
+        case 'area-stacked-100':
+            axis.min = 1;
+            axis.max = max;
+            axis.step = 1;
+            break;
+        case 'bar':
+        case 'bar-stacked':
+        case 'bar-stacked-100':
+            axis = $$.getAxisData(min, max, true);
+            break;
+        case 'column':
+        case 'column-stacked':
+        case 'column-stacked-100':
+            axis.min = 1;
+            axis.max = max;
+            axis.step = 1;
+            break;
+        case 'line-m':
+        case 'line':
+        case 'line-stacked-m':
+        case 'line-stacked':
+        case 'line-stacked-100-m':
+        case 'line-stacked-100':
+            axis.min = 1;
+            axis.max = max;
+            axis.step = 1;
+            break;
+        case 'xy-m':
+        case 'xy-smooth-m':
+        case 'xy-smooth':
+        case 'xy-straight-m':
+        case 'xy-straight':
+            axis = $$.getAxisData(min, max, true);
+            break;
+        default:
+            throw new Error("Unsupported type for axis");
+    }
+    return axis;
+};
+
+c3_chart_internal_fn.getAxisData =  function(min, max, isAbscissa) {
+    var $$ = this;
+
+    isAbscissa = isAbscissa || false;
+    var axis = {};
+
+    if (min === 0 && max === 0) {
+        axis.step = 0.1;
+        axis.min = 0;
+        axis.max = 1;
+        return axis;
+    }
+
+    var min4calc = 0;
+    var max4calc = 0;
+    if (min != max) {
+        min4calc = Math.min(min);
+        max4calc = Math.max(max);
+    }
+    else {
+        min4calc = signMin > 0 ? 0 : min;
+        max4calc = signMin > 0 ? max : 0;
+    }
+
+    var signMin = min4calc === 0 ? 0 : min4calc / Math.abs(min4calc);
+    var signMax = max4calc === 0 ? 0 : max4calc / Math.abs(max4calc);
+
+    var absMax4calc = Math.max(Math.abs(min), Math.abs(max));
+    var absMin4calc = Math.min(Math.abs(min), Math.abs(max));
+
+    var signAbsMax4calc = Math.abs(max) > Math.abs(min) ? signMax : signMin;
+    var signAbsMin4calc = Math.abs(max) < Math.abs(min) ? signMax : signMin;
+
+    var isBrokenAxis = Math.abs(Math.abs(max) - Math.abs(min)) < (Math.abs(max) > Math.abs(min)?Math.abs(max):Math.abs(min)) * 0.2 && signMin == signMax;
+
+    var delta = 0;
+
+    if (isBrokenAxis) {
+        delta = Math.abs(max4calc - min4calc);
+    }
+    else {
+        if (signMin == signMax) {
+                delta = Math.abs(max4calc) > Math.abs(min4calc) ? Math.abs(max4calc) : Math.abs(min4calc);
+        }
+        else {
+            delta = Math.abs(max4calc - min4calc);
+        }
+    }
+
+    var basePow = log10(delta);
+    var normalize = delta / Math.pow(10, Math.floor(basePow));
+    var peak = normalize * 1.05;
+
+    if (isBrokenAxis) {
+        peak = peak * 1.5;
+    }
+
+    var normalizestep = 0;
+    if(!isAbscissa) {
+            if (peak < 2) {
+                normalizestep = 0.2;
+            }
+            else if (peak < 5) {
+                normalizestep = 0.5;
+            }
+            else if (peak > 10) {
+                    normalizestep = 2;
+            }
+            else {
+                normalizestep = 1;
+            }
+    } else {
+            if (peak < 1.8) {
+                normalizestep = 0.2;
+            }
+            else if (peak < 4.5) {
+                normalizestep = 0.5;
+            }
+            else if (peak > 9) {
+                normalizestep = 2;
+            }
+            else {
+                normalizestep = 1;
+            }
+    }
+
+    axis.step = normalizestep * Math.pow(10, Math.floor(basePow));
+
+    var axisMax = 0;
+    var axisMin = 0;
+
+    if (!isBrokenAxis) {
+        if (signMin == signMax || signMin === 0 || signMax === 0) {
+            axisMin = 0;
+            axisMax = Math.ceil(absMax4calc * 1.05 / axis.step) * axis.step * (signAbsMax4calc);
+        }
+        else {
+            axisMax = Math.ceil(max4calc * 1.05 / axis.step) * (axis.step);
+            axisMin = Math.floor(((max4calc - (max4calc - min4calc) * 1.05)) / axis.step) * (axis.step);
+        }
+    }
+    else {
+        axisMin = Math.floor((absMin4calc - (absMax4calc - absMin4calc) / 2 )/ axis.step) * axis.step * signAbsMin4calc;
+        axisMax = Math.ceil(((absMax4calc - absMin4calc) * 1.075 + absMin4calc) / axis.step) * axis.step * signAbsMax4calc ;
+    }
+    axis.min = Math.min(axisMin, axisMax);
+    axis.max = Math.max(axisMin, axisMax);
+    return axis;
+};
+
 
