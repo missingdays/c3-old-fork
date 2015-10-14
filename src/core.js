@@ -421,7 +421,6 @@ c3_chart_internal_fn.updateTargets = function (targets) {
 c3_chart_internal_fn.showTargets = function () {
     var $$ = this;
     $$.svg.selectAll('.' + CLASS.target).filter(function (d) { return $$.isTargetToShow(d.id); })
-      .transition().duration($$.config.transition_duration)
         .style("opacity", 1);
 };
 
