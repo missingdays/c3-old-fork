@@ -36,6 +36,7 @@ module.exports = (grunt) ->
               'src/shape.js',
               'src/shape.line.js',
               'src/shape.bar.js',
+              'src/stacked.js',
               'src/text.js',
               'src/type.js',
               'src/grid.js',

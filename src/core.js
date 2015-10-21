@@ -496,6 +496,8 @@ c3_chart_internal_fn.redraw = function (options, transitions) {
         $$.y2Axis.tickValues($$.generateTickValues($$.y2.domain(), config.axis_y2_tick_count));
     }
 
+    $$.normalize();
+
     // axes
     $$.redrawAxis(transitions, hideAxis);
 

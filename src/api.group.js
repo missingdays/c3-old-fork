@@ -5,3 +5,11 @@ c3_chart_fn.groups = function (groups) {
     $$.redraw();
     return config.data_groups;
 };
+
+c3_chart_fn.isNormalized = function(is){
+    var $$ = this.internal;
+    if(isUndefined(is)){
+        return $$.config.normalized;
+    }
+    $$.config.normalized = is;
+};
