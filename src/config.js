@@ -57,6 +57,7 @@ c3_chart_internal_fn.getDefaultConfig = function () {
         data_columns: undefined,
         data_mimeType: undefined,
         data_keys: undefined,
+        normalized: false,
         // configuration for no plot-able data supplied.
         data_empty_label_text: "",
         // subchart

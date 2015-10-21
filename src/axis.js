@@ -377,7 +377,7 @@ c3_chart_internal_fn.tuneAxis = function(sync, callback){
     $$.pushCallback(callback);
 
     // if we don't need to tune
-    if($$.config.stacked){
+    if($$.config.normalized){
         $$.cachedRedraw();
         return;
     }
