@@ -587,7 +587,6 @@ c3_chart_internal_fn.findMinMax = function () {
     var i,j, id;
 
     var allData = $$.api.data();
-
     allData.forEach(function(v){
         var data;
         if(v){
@@ -637,9 +636,12 @@ c3_chart_internal_fn.findMinMax = function () {
                     for(var k = 0; k < tmp.length; k++){
                         s += tmp[k][j].value;
                     }
-                    if (isUndefined(maxY) || s > maxY)
-                    if (isUndefined(minY) || s < minY)
+                    if (isUndefined(maxY) || s > maxY){
+                        maxY = s;
+                    }
+                    if (isUndefined(minY) || s < minY){
                         minY = s;
+                    }
                 }
             }
         } else {
