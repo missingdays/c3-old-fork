@@ -18,7 +18,7 @@ c3.chart.internal.fn.getLineCoordsForBar = function(center, order){
 
     var x1, x2, y1, y2;
 
-    if(utils.isSub($$.config.ed3Type)){
+    if(isSub($$.config.ed3Type)){
 
         $$.ed3Config.subBox = $$.getBox($$.main.selectAll(".sub-chart .c3-chart-bars"));
 
@@ -88,7 +88,7 @@ c3.chart.internal.fn.getLineCoordsForPie = function(center, order){
 
     var x1, x2, y1, y2;
 
-    if(utils.isSub($$.config.ed3Type)){
+    if(isSub($$.config.ed3Type)){
 
         if(!$$.ed3Config.coords) return;
 
@@ -189,7 +189,7 @@ c3.chart.internal.fn.redrawLines = function(){
         line = main.selectAll(".lineForSubChart").filter(function(d, i){ return i === 0; });
     }
 
-    center = $$.getCenter(main.selectAll('.c3-chart'));
+    var center = $$.getCenter(main.selectAll('.c3-chart'));
 
     var coords;
 

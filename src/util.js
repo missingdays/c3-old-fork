@@ -52,5 +52,55 @@ var isValue = c3_chart_internal_fn.isValue = function (v) {
     },
     toDegrees = function(radians){
         return radians * (180 / Math.PI);
+    },
+    isSub = function(type){
+        if(!type){
+            return false;
+        }
+        return type.indexOf("sub") > -1;
+    },
+    copyObject = function(oldObj){
+        var newObj = {};
+        for(var key in oldObj){
+            if(oldObj.hasOwnProperty(key)){
+                newObj[key] = oldObj[key];
+            }
+        }
+        return newObj;
+    },
+    copyArray = function(oldArray){
+        var newArray = [];
+
+        oldArray.forEach(function(elem){
+            if(typeof elem === 'function'){
+                newArray.push(copyFunction(elem));
+            } else if(Array.isArray(elem)){
+                newArray.push(copyArray(elem));
+            } else if(typeof elem === 'object'){
+                newArray.push(copyObject(elem));
+            } else {
+                newArray.push(elem);
+            }
+        });
+
+        return newArray;
+    },
+    copyFunction = function(oldFunction){
+        var cloneObj = oldFunction;
+
+        if(oldFunction.__isClone) {
+            cloneObj = oldFunction.__clonedFrom;
+        }
+
+        var temp = function() { return cloneObj.apply(oldFunction, arguments); };
+
+        for(var key in oldFunction) {
+            temp[key] = oldFunction[key];
+        }
+
+        temp.__isClone = true;
+        temp.__clonedFrom = cloneObj;
+
+        return temp;
     };
 

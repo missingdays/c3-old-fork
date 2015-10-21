@@ -114,3 +114,10 @@ c3_chart_fn.getValue = function(id, i){
     return t.values[i].value;
 
 };
+c3.chart.fn.update_x = function(x){
+    var $$ = this.internal;
+
+    $$.api.x(copyArray(x));
+
+    $$.tuneAxis();
+};

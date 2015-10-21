@@ -57,6 +57,7 @@ module.exports = (grunt) ->
               'src/callbacks.js',
               'src/class.js',
               'src/util.js',
+              'src/lines.js',
               'src/api.focus.js',
               'src/api.title.js',
               'src/api.show.js',
