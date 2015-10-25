@@ -164,11 +164,13 @@ c3_chart_internal_fn.initWithData = function (data) {
 
     // Init data as targets
     $$.data.xs = {};
-    $$.data.targets = $$.convertDataToTargets(data);
+    $$.data._targets = $$.convertDataToTargets(data);
 
     if (config.data_filter) {
-        $$.data.targets = $$.data.targets.filter(config.data_filter);
+        $$.data._targets = $$.data._targets.filter(config.data_filter);
     }
+
+    $$.data.targets = $$.normalize($$.data._targets);
 
     // Set targets to hide if needed
     if (config.data_hide) {
@@ -394,10 +396,9 @@ c3_chart_internal_fn.updateSizes = function () {
     }
 };
 
-c3_chart_internal_fn.updateTargets = function (t){
+c3_chart_internal_fn.updateTargets = function (targets){
     var $$ = this;
 
-    var targets = $$.normalize(t);
     /*-- Main --*/
 
     //-- Text --//

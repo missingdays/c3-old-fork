@@ -21,12 +21,12 @@ c3_chart_internal_fn.load = function (targets, args) {
                 }
             }
         });
-        $$.data.targets = $$.data.targets.concat(targets); // add remained
+        $$.data._targets = $$.data._targets.concat(targets); // add remained
+        $$.data.targets = $$.normalize($$.data._targets);
     }
 
     // Set targets
     $$.updateTargets($$.data.targets);
-
 
     $$.tuneAxis();
     // Redraw with new targets
@@ -82,8 +82,9 @@ c3_chart_internal_fn.unload = function (targetIds, done) {
             $$.legend.selectAll('.' + CLASS.legendItem + $$.getTargetSelectorSuffix(id)).remove();
         }
         // Remove target
-        $$.data.targets = $$.data.targets.filter(function (t) {
+        $$.data._targets = $$.data.targets.filter(function (t) {
             return t.id !== id;
         });
+        $$.data.targets = $$.normalize($$.data._targets);
     });
 };

@@ -5,7 +5,11 @@ c3.chart.internal.fn.normalize = function(targets){
         return targets;
     }
 
-    var data = copyArray(targets);
+    var data = [];
+
+    targets.forEach(function(target){
+        data.push($$.cloneTarget(target));
+    });
 
     for(var k = 0; k < targets[0].values.length; k++) {
         var tt = 0;
@@ -17,7 +21,11 @@ c3.chart.internal.fn.normalize = function(targets){
 
     for(c in targets) {
         for(k = 0; k < tr.length; k++) {
-            data[c].values[k].value = targets[c].values[k].value / tr[k];
+            if(tr[k] == 0){
+                data[c].values[k].value = 0;
+            } else {
+                data[c].values[k].value = targets[c].values[k].value / tr[k];
+            }
         }
     }
 

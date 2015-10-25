@@ -83,7 +83,8 @@ c3_chart_fn.flow = function (args) {
             t.values = missing.concat(t.values);
         });
     }
-    $$.data.targets = $$.data.targets.concat(targets); // add remained
+    $$.data._targets = $$.data.targets.concat(targets); // add remained
+    $$.data.targets = $$.normalize($$.data._targets);
 
     // check data count because behavior needs to change when it's only one
     dataCount = $$.getMaxDataCount();

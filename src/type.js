@@ -32,7 +32,8 @@ c3_chart_internal_fn.hasArcType = function (targets) {
 };
 c3_chart_internal_fn.isLineType = function (d) {
     var config = this.config, id = isString(d) ? d : d.id;
-    return !config.data_types[id] || ['line', 'spline', 'area', 'area-spline', 'step', 'area-step'].indexOf(config.data_types[id]) >= 0;
+    var is = !config.data_types[id] || ['line', 'spline', 'area', 'area-spline', 'step', 'area-step'].indexOf(config.data_types[id]) >= 0;
+    return is;
 };
 c3_chart_internal_fn.isStepType = function (d) {
     var id = isString(d) ? d : d.id;

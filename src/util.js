@@ -63,10 +63,10 @@ var isValue = c3_chart_internal_fn.isValue = function (v) {
         var newObj = {};
         for(var key in oldObj){
             if(oldObj.hasOwnProperty(key)){
-                if(typeof oldObj[key] === 'object'){
-                    newObj[key] = copyObject(oldObj[key]);
-                } else if(Array.isArray(oldObj[key])){
+                if(Array.isArray(oldObj[key])){
                     newObj[key] = copyArray(oldObj[key]);
+                } else if(typeof oldObj[key] === 'object'){
+                    newObj[key] = copyObject(oldObj[key]);
                 } else if(typeof oldObj[key] === 'function'){
                     newObj[key] = oldObj[key].bind(newObj);
                 } else {

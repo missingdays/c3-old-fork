@@ -1,4 +1,4 @@
-c3_chart_internal_fn.initAxis = function () {
+c3_chart_internal_fn.initAxis = function(){
     var $$ = this, config = $$.config, main = $$.main;
     $$.axes.x = main.append("g")
         .attr("class", CLASS.axis + ' ' + CLASS.axisX)
