@@ -5090,6 +5090,9 @@
             found = false, index = 0,
             gMin = config.gauge_min, gMax = config.gauge_max, gTic, gValue;
         $$.pie($$.filterTargetsToShow($$.data.targets)).forEach(function (t) {
+            if(!t || !d){
+                return;
+            }
             if (! found && t.data.id === d.data.id) {
                 found = true;
                 d = t;
