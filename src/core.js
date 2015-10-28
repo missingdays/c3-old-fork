@@ -304,6 +304,7 @@ c3_chart_internal_fn.initWithData = function (data) {
 
     // export element of the chart
     $$.api.element = $$.selectChart.node();
+    $$.updateAndRedraw();
 };
 
 c3_chart_internal_fn.smoothLines = function (el, type) {
