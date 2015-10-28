@@ -41,6 +41,9 @@ c3_chart_internal_fn.updateAngle = function (d) {
         }
         index++;
     });
+    if(!d){
+        return;
+    }
     if (isNaN(d.endAngle)) {
         d.endAngle = d.startAngle;
     }
