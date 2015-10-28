@@ -353,11 +353,13 @@
 
         // Init data as targets
         $$.data.xs = {};
-        $$.data.targets = $$.convertDataToTargets(data);
+        $$.data._targets = $$.convertDataToTargets(data);
 
         if (config.data_filter) {
-            $$.data.targets = $$.data.targets.filter(config.data_filter);
+            $$.data._targets = $$.data._targets.filter(config.data_filter);
         }
+
+        $$.data.targets = $$.normalize($$.data._targets);
 
         // Set targets to hide if needed
         if (config.data_hide) {
@@ -583,7 +585,7 @@
         }
     };
 
-    c3_chart_internal_fn.updateTargets = function (targets) {
+    c3_chart_internal_fn.updateTargets = function (targets){
         var $$ = this;
 
         /*-- Main --*/
@@ -684,8 +686,6 @@
         if (!config.axis_y2_tick_values && config.axis_y2_tick_count) {
             $$.y2Axis.tickValues($$.generateTickValues($$.y2.domain(), config.axis_y2_tick_count));
         }
-
-        $$.normalize();
 
         // axes
         $$.redrawAxis(transitions, hideAxis);
@@ -1199,6 +1199,7 @@
             data_columns: undefined,
             data_mimeType: undefined,
             data_keys: undefined,
+            normalized: false,
             // configuration for no plot-able data supplied.
             data_empty_label_text: "",
             // subchart
@@ -2281,12 +2282,12 @@
                     }
                 }
             });
-            $$.data.targets = $$.data.targets.concat(targets); // add remained
+            $$.data._targets = $$.data._targets.concat(targets); // add remained
+            $$.data.targets = $$.normalize($$.data._targets);
         }
 
         // Set targets
         $$.updateTargets($$.data.targets);
-
 
         $$.tuneAxis();
         // Redraw with new targets
@@ -2342,9 +2343,10 @@
                 $$.legend.selectAll('.' + CLASS.legendItem + $$.getTargetSelectorSuffix(id)).remove();
             }
             // Remove target
-            $$.data.targets = $$.data.targets.filter(function (t) {
+            $$.data._targets = $$.data.targets.filter(function (t) {
                 return t.id !== id;
             });
+            $$.data.targets = $$.normalize($$.data._targets);
         });
     };
 
@@ -3384,27 +3386,38 @@
         return sx < mouse[0] && mouse[0] < ex && ey < mouse[1] && mouse[1] < sy;
     };
 
-    c3.chart.internal.fn.normalize = function(){
-        var $$ = this, tr = [], c = [],
-            data = $$.api.data();
+    c3.chart.internal.fn.normalize = function(targets){
+        var $$ = this, tr = [], c = [];
 
-        if(!$$.config.normalized){
-            return;
+        if(!$$.config.normalized || isUndefined(targets)){
+            return targets;
         }
 
-        for(var k = 0; k < data[0].values.length; k++) {
+        var data = [];
+
+        targets.forEach(function(target){
+            data.push($$.cloneTarget(target));
+        });
+
+        for(var k = 0; k < targets[0].values.length; k++) {
             var tt = 0;
-            for(c in data) {
-                tt = tt + data[c].values[k].value;
+            for(c in targets) {
+                tt = tt + targets[c].values[k].value;
             }
             tr[k] = tt;
         }
 
-        for(c in data) {
+        for(c in targets) {
             for(k = 0; k < tr.length; k++) {
-                data[c].values[k].value = data[c].values[k].value / tr[k];
+                if(tr[k] == 0){
+                    data[c].values[k].value = 0;
+                } else {
+                    data[c].values[k].value = targets[c].values[k].value / tr[k];
+                }
             }
         }
+
+        return data;
     }
 
     c3_chart_internal_fn.initText = function () {
@@ -3552,7 +3565,8 @@
     };
     c3_chart_internal_fn.isLineType = function (d) {
         var config = this.config, id = isString(d) ? d : d.id;
-        return !config.data_types[id] || ['line', 'spline', 'area', 'area-spline', 'step', 'area-step'].indexOf(config.data_types[id]) >= 0;
+        var is = !config.data_types[id] || ['line', 'spline', 'area', 'area-spline', 'step', 'area-step'].indexOf(config.data_types[id]) >= 0;
+        return is;
     };
     c3_chart_internal_fn.isStepType = function (d) {
         var id = isString(d) ? d : d.id;
@@ -4286,7 +4300,7 @@
         $$.legendHasRendered = true;
     };
 
-    c3_chart_internal_fn.initAxis = function () {
+    c3_chart_internal_fn.initAxis = function(){
         var $$ = this, config = $$.config, main = $$.main;
         $$.axes.x = main.append("g")
             .attr("class", CLASS.axis + ' ' + CLASS.axisX)
@@ -4665,7 +4679,8 @@
         $$.pushCallback(callback);
 
         // if we don't need to tune
-        if($$.config.stacked){
+        if($$.config.normalized){
+            $$.data.targets = $$.normalize($$.data._targets);
             $$.cachedRedraw();
             return;
         }
@@ -6077,6 +6092,12 @@
         var $$ = this;
         $$.resolveCallbacks();
         $$.updateAndRedraw();
+        // Hack so sub-chart draws correctly.
+        if($$.config.hasSubs || $$.config.isSub){
+            setTimeout(function(){
+                $$.updateAndRedraw();
+            });
+        }
     };
 
     c3.chart.internal.fn.cachedRedraw = function(options, callback){
@@ -6347,7 +6368,15 @@
             var newObj = {};
             for(var key in oldObj){
                 if(oldObj.hasOwnProperty(key)){
-                    newObj[key] = oldObj[key];
+                    if(Array.isArray(oldObj[key])){
+                        newObj[key] = copyArray(oldObj[key]);
+                    } else if(typeof oldObj[key] === 'object'){
+                        newObj[key] = copyObject(oldObj[key]);
+                    } else if(typeof oldObj[key] === 'function'){
+                        newObj[key] = oldObj[key].bind(newObj);
+                    } else {
+                        newObj[key] = oldObj[key];
+                    }
                 }
             }
             return newObj;
@@ -6875,12 +6904,20 @@
 
     c3_chart_fn.setValue = function(id, i, value){
         var $$ = this.internal;
-        var t = $$.api.data(id)[0];
+        var targets = $$.data._targets;
 
-        if(!t.values[i]){
+        var target;
+
+        targets.forEach(function(t){
+            if(t.id == id){
+                target = t
+            }
+        });
+
+        if(!target.values[i]){
             $$.api.appendToColumn([id, value]);
         } else {
-            t.values[i].value = value;
+            target.values[i].value = value;
             $$.tuneAxis();
         }
     };
@@ -6992,7 +7029,8 @@
                 t.values = missing.concat(t.values);
             });
         }
-        $$.data.targets = $$.data.targets.concat(targets); // add remained
+        $$.data._targets = $$.data.targets.concat(targets); // add remained
+        $$.data.targets = $$.normalize($$.data._targets);
 
         // check data count because behavior needs to change when it's only one
         dataCount = $$.getMaxDataCount();
