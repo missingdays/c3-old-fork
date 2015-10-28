@@ -35,7 +35,11 @@ c3.chart.internal.fn.getLineCoordsForBar = function(center, order){
         x2 -= ($$.getCurrentWidth());
 
     } else {
-        $$.config.angle = $$.updateAngle($$.config.newd).startAngle;
+        try {
+            $$.config.angle = $$.updateAngle($$.config.newd).startAngle;
+        } catch(e){
+            $$.config.angle = 0;
+        }
 
         // Does first sequence take less than half of the chart?
         var small = toDegrees($$.config.angle) > 0;
