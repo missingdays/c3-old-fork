@@ -90,12 +90,20 @@ c3_chart_fn.loadColumns = function(cols){
 
 c3_chart_fn.setValue = function(id, i, value){
     var $$ = this.internal;
-    var t = $$.api.data(id)[0];
+    var targets = $$.data._targets;
 
-    if(!t.values[i]){
+    var target;
+
+    targets.forEach(function(t){
+        if(t.id == id){
+            target = t
+        }
+    });
+
+    if(!target.values[i]){
         $$.api.appendToColumn([id, value]);
     } else {
-        t.values[i].value = value;
+        target.values[i].value = value;
         $$.tuneAxis();
     }
 };

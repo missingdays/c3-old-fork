@@ -378,6 +378,7 @@ c3_chart_internal_fn.tuneAxis = function(sync, callback){
 
     // if we don't need to tune
     if($$.config.normalized){
+        $$.data.targets = $$.normalize($$.data._targets);
         $$.cachedRedraw();
         return;
     }
