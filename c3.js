@@ -493,12 +493,11 @@
 
         // export element of the chart
         $$.api.element = $$.selectChart.node();
-        if($$.config.hasSubs || $$.config.isSub){
-            $$.api.flush();
-            setTimeout(function(){
+        setTimeout(function(){
+            if($$.config.hasSubs || $$.config.isSub){
                 $$.api.flush();
-            }, 200);
-        }
+            }
+        }, 200);
     };
 
     c3_chart_internal_fn.smoothLines = function (el, type) {
