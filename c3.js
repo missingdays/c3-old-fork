@@ -6100,7 +6100,7 @@
         // Hack so sub-chart draws correctly.
         if($$.config.hasSubs || $$.config.isSub){
             setTimeout(function(){
-                $$.updateAndRedraw();
+                $$.api.flush();
             });
         }
     };

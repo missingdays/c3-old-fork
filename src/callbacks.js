@@ -28,7 +28,7 @@ c3.chart.internal.fn.resolveDraw = function(options){
     // Hack so sub-chart draws correctly.
     if($$.config.hasSubs || $$.config.isSub){
         setTimeout(function(){
-            $$.updateAndRedraw();
+            $$.api.flush();
         });
     }
 };
