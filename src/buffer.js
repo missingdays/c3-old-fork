@@ -112,6 +112,23 @@ Buffer.prototype.finish = function(){
 };
 
 /**
+ * Resolves while buffer is not empty, but not more than 10 times.
+ * @function finishAll
+ * @returns {int} How many times 'finish' was called
+ */
+Buffer.prototype.finishAll = function(){
+    var self = this;
+    var counter = 0;
+
+    while(!self.isEmpty() && counter<10){
+        self.finish();
+        counter++;
+    }
+
+    return counter;
+};
+
+/**
  * Adds callback to main queue and starts timer
  * @function onfinish 
  * @param {Function} callback
@@ -154,6 +171,21 @@ Buffer.prototype.afterfinish = function(callback){
 Buffer.prototype.has = function(id){
     var self = this;
     return isUndefined(self.namedCallbacks[id]);
+};
+
+Buffer.prototype.isEmpty = function(){
+    var self = this;
+
+    for(var id in self.namedCallbacks){
+        if(self.has(id)){
+            return false;
+        }
+    }
+
+    var callbacks = self.callbacks.length == 0;
+    var lastCallbacks = self.lastCallbacks.length == 0;
+
+    return callbacks && lastCallbacks;
 };
 
 /**
