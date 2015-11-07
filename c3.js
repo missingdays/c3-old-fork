@@ -5402,6 +5402,7 @@
 
         if($$.config.hasSubs || $$.config.isSub){
             $$.buffer.onlastfinish("draw-lines"+$$.config.isSub, function(){
+                console.log("redraw");
                 $$.ed3Internal.redrawLinesOnBoth();
                 $$.ed3Internal.redrawLinesOnBoth();
             });
@@ -6488,7 +6489,9 @@
 
         var x1, x2, y1, y2;
 
-        if(isSub($$.config.ed3Type)){
+        console.log(order);
+
+        if($$.config.isSub){
 
             $$.ed3Config.subBox = $$.getBox($$.main.selectAll(".sub-chart .c3-chart-bars"));
 
@@ -6558,7 +6561,7 @@
 
         var x1, x2, y1, y2;
 
-        if(isSub($$.config.ed3Type)){
+        if($$.config.isSub){
 
             if(!$$.ed3Config.coords[order]) return;
 

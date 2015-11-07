@@ -31,7 +31,7 @@ c3.chart.internal.fn.getLineCoordsForBar = function(center, order){
 
     var x1, x2, y1, y2;
 
-    if(isSub($$.config.ed3Type)){
+    if($$.config.isSub){
 
         $$.ed3Config.subBox = $$.getBox($$.main.selectAll(".sub-chart .c3-chart-bars"));
 
@@ -101,7 +101,7 @@ c3.chart.internal.fn.getLineCoordsForPie = function(center, order){
 
     var x1, x2, y1, y2;
 
-    if(isSub($$.config.ed3Type)){
+    if($$.config.isSub){
 
         if(!$$.ed3Config.coords[order]) return;
 

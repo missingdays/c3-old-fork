@@ -306,6 +306,7 @@ c3_chart_internal_fn.redrawArc = function (duration, durationForExit, withTransf
 
     if($$.config.hasSubs || $$.config.isSub){
         $$.buffer.onlastfinish("draw-lines"+$$.config.isSub, function(){
+            console.log("redraw");
             $$.ed3Internal.redrawLinesOnBoth();
             $$.ed3Internal.redrawLinesOnBoth();
         });
