@@ -35,7 +35,7 @@ c3.chart.internal.fn.getLineCoordsForBar = function(center, order){
 
         $$.ed3Config.subBox = $$.getBox($$.main.selectAll(".sub-chart .c3-chart-bars"));
 
-        if(!$$.ed3Config.coords[order]) return;
+        if(isUndefined($$.ed3Config.coords[order])) return;
 
         var coords = $$.ed3Config.coords[order];
 
@@ -67,10 +67,6 @@ c3.chart.internal.fn.getLineCoordsForBar = function(center, order){
             y1 = center.y - $$.radius * (small ? Math.cos($$.config.angle) : 1);
         } else {
             y1 = center.y + $$.radius * (small ? Math.cos($$.config.angle) : 1);
-        }
-
-        if(!$$.ed3Config.coords){
-            $$.ed3Config.coords = {};
         }
 
         if(!$$.ed3Config.subBox) return; 
@@ -107,7 +103,7 @@ c3.chart.internal.fn.getLineCoordsForPie = function(center, order){
 
     if(isSub($$.config.ed3Type)){
 
-        if(!$$.ed3Config.coords) return;
+        if(!$$.ed3Config.coords[order]) return;
 
         var coords = $$.ed3Config.coords[order];
 
@@ -141,10 +137,6 @@ c3.chart.internal.fn.getLineCoordsForPie = function(center, order){
             y1 = center.y + $$.radius * (small ? Math.cos($$.config.angle) : 1);
 
             y2 = center.y + $$.radius;
-        }
-
-        if(!$$.ed3Config.coords){
-            $$.ed3Config.coords = {};
         }
 
         if(small){

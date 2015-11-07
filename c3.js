@@ -4750,8 +4750,8 @@
         if(sync){
             apply();
         } else {
-            $$.buffer.onlastfinish("tune-axis", apply);
-            $$.buffer.onlastfinish("cached-redraw", function(){});
+            $$.buffer.onlastfinish("tune-axis" + $$.config.isSub, apply);
+            $$.buffer.onlastfinish("cached-redraw" + $$.config.isSub, function(){});
         }
 
     };
@@ -4806,7 +4806,7 @@
                 axis = $$.getAxisData(min, max, true);
                 break;
             default:
-                throw new Error("Unsupported type for axis");
+                throw new Error("Unsupported type for axis " + type);
         }
         return axis;
     };
@@ -5401,7 +5401,7 @@
             .style("opacity", $$.hasType('donut') || $$.hasType('gauge') ? 1 : 0);
 
         if($$.config.hasSubs || $$.config.isSub){
-            $$.buffer.onlastfinish("draw-lines", function(){
+            $$.buffer.onlastfinish("draw-lines"+$$.config.isSub, function(){
                 $$.ed3Internal.redrawLinesOnBoth();
                 $$.ed3Internal.redrawLinesOnBoth();
             });
@@ -6143,8 +6143,8 @@
         $$.pushCallback(callback);
 
         if($$.config.shouldCache){
-            if(!$$.buffer.has("tune-axis")){
-                $$.buffer.onlastfinish("cached-redraw",
+            if(!$$.buffer.has("tune-axis" + $$.config.isSub)){
+                $$.buffer.onlastfinish("cached-redraw" + $$.config.isSub,
                     function(){
                         $$.resolveDraw(options);
                     }
@@ -6492,7 +6492,7 @@
 
             $$.ed3Config.subBox = $$.getBox($$.main.selectAll(".sub-chart .c3-chart-bars"));
 
-            if(!$$.ed3Config.coords[order]) return;
+            if(isUndefined($$.ed3Config.coords[order])) return;
 
             var coords = $$.ed3Config.coords[order];
 
@@ -6524,10 +6524,6 @@
                 y1 = center.y - $$.radius * (small ? Math.cos($$.config.angle) : 1);
             } else {
                 y1 = center.y + $$.radius * (small ? Math.cos($$.config.angle) : 1);
-            }
-
-            if(!$$.ed3Config.coords){
-                $$.ed3Config.coords = {};
             }
 
             if(!$$.ed3Config.subBox) return; 
@@ -6564,7 +6560,7 @@
 
         if(isSub($$.config.ed3Type)){
 
-            if(!$$.ed3Config.coords) return;
+            if(!$$.ed3Config.coords[order]) return;
 
             var coords = $$.ed3Config.coords[order];
 
@@ -6598,10 +6594,6 @@
                 y1 = center.y + $$.radius * (small ? Math.cos($$.config.angle) : 1);
 
                 y2 = center.y + $$.radius;
-            }
-
-            if(!$$.ed3Config.coords){
-                $$.ed3Config.coords = {};
             }
 
             if(small){

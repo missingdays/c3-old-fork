@@ -411,8 +411,8 @@ c3_chart_internal_fn.tuneAxis = function(sync, callback){
     if(sync){
         apply();
     } else {
-        $$.buffer.onlastfinish("tune-axis", apply);
-        $$.buffer.onlastfinish("cached-redraw", function(){});
+        $$.buffer.onlastfinish("tune-axis" + $$.config.isSub, apply);
+        $$.buffer.onlastfinish("cached-redraw" + $$.config.isSub, function(){});
     }
 
 };
@@ -467,7 +467,7 @@ c3_chart_internal_fn.getAbscissa =  function(type, min, max) {
             axis = $$.getAxisData(min, max, true);
             break;
         default:
-            throw new Error("Unsupported type for axis");
+            throw new Error("Unsupported type for axis " + type);
     }
     return axis;
 };
