@@ -5402,9 +5402,10 @@
 
         if($$.config.hasSubs || $$.config.isSub){
             $$.buffer.onlastfinish("draw-lines"+$$.config.isSub, function(){
-                console.log("redraw");
-                $$.ed3Internal.redrawLinesOnBoth();
-                $$.ed3Internal.redrawLinesOnBoth();
+                $$.buffer.onlastfinish("draw-lines"+$$.config.isSub, function(){
+                    $$.ed3Internal.redrawLinesOnBoth();
+                    $$.ed3Internal.redrawLinesOnBoth();
+                });
             });
         }
 
@@ -6469,15 +6470,15 @@
 
     c3.chart.internal.fn.getBox = function(selection){
         var box;
-        // FIXME: hack for nodejs
+
         try {
             box = selection.node().getBBox();
         } catch(e){
             box = {
-                y: 0,
                 x: 0,
-                height: 0,
-                width: 0
+                y: 0,
+                width: 0,
+                height: 0
             };
         }
 
@@ -6488,8 +6489,6 @@
         var $$ = this;
 
         var x1, x2, y1, y2;
-
-        console.log(order);
 
         if($$.config.isSub){
 
