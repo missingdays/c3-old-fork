@@ -12,7 +12,7 @@ c3_chart_internal_fn.load = function (targets, args) {
             });
         }
         // Update/Add data
-        $$.data.targets.forEach(function (d) {
+        $$.data._targets.forEach(function (d) {
             for (var i = 0; i < targets.length; i++) {
                 if (d.id === targets[i].id) {
                     d.values = targets[i].values;
@@ -32,7 +32,7 @@ c3_chart_internal_fn.load = function (targets, args) {
     // Redraw with new targets
     $$.redraw({withUpdateOrgXDomain: true, withUpdateXDomain: true, withLegend: true});
 
-    if (args.done) { args.done(); }
+    if (args && args.done) { args.done(); }
 };
 c3_chart_internal_fn.loadFromArgs = function (args) {
     var $$ = this;
@@ -63,7 +63,7 @@ c3_chart_internal_fn.unload = function (targetIds, done) {
         done = function () {};
     }
     // filter existing target
-    targetIds = targetIds.filter(function (id) { return $$.hasTarget($$.data.targets, id); });
+    targetIds = targetIds.filter(function (id) { return $$.hasTarget($$.data._targets, id); });
     // If no target, call done and return
     if (!targetIds || targetIds.length === 0) {
         done();
@@ -82,7 +82,7 @@ c3_chart_internal_fn.unload = function (targetIds, done) {
             $$.legend.selectAll('.' + CLASS.legendItem + $$.getTargetSelectorSuffix(id)).remove();
         }
         // Remove target
-        $$.data._targets = $$.data.targets.filter(function (t) {
+        $$.data._targets = $$.data._targets.filter(function (t) {
             return t.id !== id;
         });
         $$.data.targets = $$.normalize($$.data._targets);

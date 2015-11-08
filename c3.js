@@ -670,11 +670,11 @@
         withSubchart = getOption(options, "withSubchart", true);
         withTransition = getOption(options, "withTransition", true);
         withTransform = getOption(options, "withTransform", false);
-        withUpdateXDomain = getOption(options, "withUpdateXDomain", false);
-        withUpdateOrgXDomain = getOption(options, "withUpdateOrgXDomain", false);
+        withUpdateXDomain = getOption(options, "withUpdateXDomain", true);
+        withUpdateOrgXDomain = getOption(options, "withUpdateOrgXDomain", true);
         withTrimXDomain = getOption(options, "withTrimXDomain", true);
         withUpdateXAxis = getOption(options, "withUpdateXAxis", withUpdateXDomain);
-        withLegend = getOption(options, "withLegend", false);
+        withLegend = getOption(options, "withLegend", true);
         withEventRect = getOption(options, "withEventRect", true);
         withDimension = getOption(options, "withDimension", true);
         withTransitionForExit = getOption(options, "withTransitionForExit", withTransition);
@@ -2310,7 +2310,7 @@
                 });
             }
             // Update/Add data
-            $$.data.targets.forEach(function (d) {
+            $$.data._targets.forEach(function (d) {
                 for (var i = 0; i < targets.length; i++) {
                     if (d.id === targets[i].id) {
                         d.values = targets[i].values;
@@ -2330,7 +2330,7 @@
         // Redraw with new targets
         $$.redraw({withUpdateOrgXDomain: true, withUpdateXDomain: true, withLegend: true});
 
-        if (args.done) { args.done(); }
+        if (args && args.done) { args.done(); }
     };
     c3_chart_internal_fn.loadFromArgs = function (args) {
         var $$ = this;
@@ -2361,7 +2361,7 @@
             done = function () {};
         }
         // filter existing target
-        targetIds = targetIds.filter(function (id) { return $$.hasTarget($$.data.targets, id); });
+        targetIds = targetIds.filter(function (id) { return $$.hasTarget($$.data._targets, id); });
         // If no target, call done and return
         if (!targetIds || targetIds.length === 0) {
             done();
@@ -2380,7 +2380,7 @@
                 $$.legend.selectAll('.' + CLASS.legendItem + $$.getTargetSelectorSuffix(id)).remove();
             }
             // Remove target
-            $$.data._targets = $$.data.targets.filter(function (t) {
+            $$.data._targets = $$.data._targets.filter(function (t) {
                 return t.id !== id;
             });
             $$.data.targets = $$.normalize($$.data._targets);
@@ -5400,7 +5400,7 @@
         main.select('.' + CLASS.chartArcsTitle)
             .style("opacity", $$.hasType('donut') || $$.hasType('gauge') ? 1 : 0);
 
-        if($$.config.hasSubs || $$.config.isSub){
+        if(typeof process !== 'object' && ($$.config.hasSubs || $$.config.isSub)){
             $$.buffer.onlastfinish("draw-lines"+$$.config.isSub, function(){
                 $$.buffer.onlastfinish("draw-lines"+$$.config.isSub, function(){
                     $$.ed3Internal.redrawLinesOnBoth();
@@ -7012,7 +7012,7 @@
         targets = $$.convertDataToTargets(data, true);
 
         // Update/Add data
-        $$.data.targets.forEach(function (t) {
+        $$.data._targets.forEach(function (t) {
             var found = false, i, j;
             for (i = 0; i < targets.length; i++) {
                 if (t.id === targets[i].id) {
@@ -7039,7 +7039,7 @@
         });
 
         // Append null for not found targets
-        $$.data.targets.forEach(function (t) {
+        $$.data._targets.forEach(function (t) {
             var i, j;
             for (i = 0; i < notfoundIds.length; i++) {
                 if (t.id === notfoundIds[i]) {
@@ -7057,10 +7057,10 @@
         });
 
         // Generate null values for new target
-        if ($$.data.targets.length) {
+        if ($$.data._targets.length) {
             targets.forEach(function (t) {
                 var i, missing = [];
-                for (i = $$.data.targets[0].values[0].index; i < tail; i++) {
+                for (i = $$.data._targets[0].values[0].index; i < tail; i++) {
                     missing.push({
                         id: t.id,
                         index: i,

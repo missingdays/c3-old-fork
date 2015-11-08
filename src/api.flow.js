@@ -18,7 +18,7 @@ c3_chart_fn.flow = function (args) {
     targets = $$.convertDataToTargets(data, true);
 
     // Update/Add data
-    $$.data.targets.forEach(function (t) {
+    $$.data._targets.forEach(function (t) {
         var found = false, i, j;
         for (i = 0; i < targets.length; i++) {
             if (t.id === targets[i].id) {
@@ -45,7 +45,7 @@ c3_chart_fn.flow = function (args) {
     });
 
     // Append null for not found targets
-    $$.data.targets.forEach(function (t) {
+    $$.data._targets.forEach(function (t) {
         var i, j;
         for (i = 0; i < notfoundIds.length; i++) {
             if (t.id === notfoundIds[i]) {
@@ -63,10 +63,10 @@ c3_chart_fn.flow = function (args) {
     });
 
     // Generate null values for new target
-    if ($$.data.targets.length) {
+    if ($$.data._targets.length) {
         targets.forEach(function (t) {
             var i, missing = [];
-            for (i = $$.data.targets[0].values[0].index; i < tail; i++) {
+            for (i = $$.data._targets[0].values[0].index; i < tail; i++) {
                 missing.push({
                     id: t.id,
                     index: i,
