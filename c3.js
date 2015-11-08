@@ -1177,6 +1177,34 @@
         return parsedDate;
     };
 
+    c3_chart_internal_fn.updateValues = function(d){
+        var $$ = this;
+        var values;
+        $$.data.targets.forEach(function(t){
+            if(t.id === d.id){
+                values = t.values;
+            }
+        });
+
+        return values;
+    };
+
+    c3_chart_internal_fn.updateValue = function(d){
+        var $$ = this;
+        var values;
+
+        $$.data.targets.forEach(function(t){
+            if(t.id === d.id){
+                values = t.values;
+            }
+        });
+
+        if(values && values[d.x]){
+            return values[d.x].value
+        }
+        return undefined;
+    };
+
     c3_chart_internal_fn.getDefaultConfig = function () {
         var config = {
             bindto: '#chart',
@@ -3009,6 +3037,9 @@
         return function (d) {
             var values = config.line_connectNull ? $$.filterRemoveNull(d.values) : d.values,
                 x = isSub ? $$.x : $$.subX, y = yScaleGetter.call($$, d.id), x0 = 0, y0 = 0, path;
+
+            values = $$.updateValues(d) || values;
+
             if ($$.isLineType(d)) {
                 if (config.data_regions[d.id]) {
                     path = $$.lineWithRegions(values, x, y, config.data_regions[d.id]);
@@ -3174,6 +3205,9 @@
         return function (d) {
             var values = config.line_connectNull ? $$.filterRemoveNull(d.values) : d.values,
                 x0 = 0, y0 = 0, path;
+
+            values = $$.updateValues(d) || values;
+
             if ($$.isAreaType(d)) {
                 if ($$.isStepType(d)) { values = $$.convertValuesToStep(values); }
                 path = area.interpolate($$.getInterpolate(d))(values);
@@ -3398,6 +3432,7 @@
             barOffset = $$.getShapeOffset($$.isBarType, barIndices, !!isSub),
             yScale = isSub ? $$.getSubYScale : $$.getYScale;
         return function (d, i) {
+            d.value = $$.updateValue(d) || d.value;
             var y0 = yScale.call($$, d.id)(0),
                 offset = barOffset(d, i) || y0, // offset is for stacked bar chart
                 posX = barX(d), posY = barY(d);

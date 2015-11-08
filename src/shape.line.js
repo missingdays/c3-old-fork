@@ -77,6 +77,9 @@ c3_chart_internal_fn.generateDrawLine = function (lineIndices, isSub) {
     return function (d) {
         var values = config.line_connectNull ? $$.filterRemoveNull(d.values) : d.values,
             x = isSub ? $$.x : $$.subX, y = yScaleGetter.call($$, d.id), x0 = 0, y0 = 0, path;
+
+        values = $$.updateValues(d) || values;
+
         if ($$.isLineType(d)) {
             if (config.data_regions[d.id]) {
                 path = $$.lineWithRegions(values, x, y, config.data_regions[d.id]);
@@ -242,6 +245,9 @@ c3_chart_internal_fn.generateDrawArea = function (areaIndices, isSub) {
     return function (d) {
         var values = config.line_connectNull ? $$.filterRemoveNull(d.values) : d.values,
             x0 = 0, y0 = 0, path;
+
+        values = $$.updateValues(d) || values;
+
         if ($$.isAreaType(d)) {
             if ($$.isStepType(d)) { values = $$.convertValuesToStep(values); }
             path = area.interpolate($$.getInterpolate(d))(values);

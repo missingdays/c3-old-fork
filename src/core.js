@@ -955,3 +955,31 @@ c3_chart_internal_fn.parseDate = function (date) {
     }
     return parsedDate;
 };
+
+c3_chart_internal_fn.updateValues = function(d){
+    var $$ = this;
+    var values;
+    $$.data.targets.forEach(function(t){
+        if(t.id === d.id){
+            values = t.values;
+        }
+    });
+
+    return values;
+};
+
+c3_chart_internal_fn.updateValue = function(d){
+    var $$ = this;
+    var values;
+
+    $$.data.targets.forEach(function(t){
+        if(t.id === d.id){
+            values = t.values;
+        }
+    });
+
+    if(values && values[d.x]){
+        return values[d.x].value
+    }
+    return undefined;
+};

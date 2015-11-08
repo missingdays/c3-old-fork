@@ -96,6 +96,7 @@ c3_chart_internal_fn.generateGetBarPoints = function (barIndices, isSub) {
         barOffset = $$.getShapeOffset($$.isBarType, barIndices, !!isSub),
         yScale = isSub ? $$.getSubYScale : $$.getYScale;
     return function (d, i) {
+        d.value = $$.updateValue(d) || d.value;
         var y0 = yScale.call($$, d.id)(0),
             offset = barOffset(d, i) || y0, // offset is for stacked bar chart
             posX = barX(d), posY = barY(d);
