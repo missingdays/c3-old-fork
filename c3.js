@@ -4165,6 +4165,10 @@
         withTransition = getOption(options, "withTransition", true);
         withTransitionForTransform = getOption(options, "withTransitionForTransform", true);
 
+        function legendText(id){
+            return isDefined(config.data_names[id]) ? config.data_names[id] : isDefined(config.data_names.id) ? config.data_names.id : id; 
+        }
+
         function getTextBox(textElement, id) {
             if (!legendItemTextBox[id]) {
                 legendItemTextBox[id] = $$.getTextRect(textElement.textContent, CLASS.legendItem);
@@ -4290,7 +4294,7 @@
                 }
             });
         l.append('text')
-            .text(function (id) { return isDefined(config.data_names[id]) ? config.data_names[id] : id; })
+            .text(legendText)
             .each(function (id, i) { updatePositions(this, id, i); })
             .style("pointer-events", "none")
             .attr('x', $$.isLegendRight || $$.isLegendInset ? xForLegendText : -200)
@@ -4319,7 +4323,7 @@
 
         texts = $$.legend.selectAll('text')
             .data(targetIds)
-            .text(function (id) { return isDefined(config.data_names[id]) ? config.data_names[id] : id; }) // MEMO: needed for update
+            .text(legendText) // MEMO: needed for update
             .each(function (id, i) { updatePositions(this, id, i); });
         (withTransition ? texts.transition() : texts)
             .attr('x', xForLegendText)
