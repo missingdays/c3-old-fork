@@ -24,7 +24,7 @@ c3.chart.internal.fn.resolveCallbacks = function(){
 c3.chart.internal.fn.resolveDraw = function(options){
     var $$ = this;
     $$.resolveCallbacks();
-    $$.updateAndRedraw();
+    $$.updateAndRedraw({ withLegend: true });
     // Hack so sub-chart draws correctly.
     if($$.config.hasSubs || $$.config.isSub){
         setTimeout(function(){
