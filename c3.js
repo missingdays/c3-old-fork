@@ -6058,7 +6058,6 @@
             else {
                 if (ids.indexOf(id) < 0) { ids.push(id); }
                 color = pattern[ids.indexOf(id) % pattern.length];
-                colors[id] = color;
             }
             return callback instanceof Function ? callback(color, d) : color;
         };
@@ -7644,6 +7643,18 @@
     c3_chart_fn.color = function (id) {
         var $$ = this.internal;
         return $$.color(id); // more patterns
+    };
+
+    c3_chart_fn.colorPattern = function(pattern){
+        var $$ = this.internal;
+
+        if(!pattern){
+            return $$.config.color_pattern;
+        }
+
+        $$.config.color_pattern = pattern;
+        $$.color = $$.generateColor();
+
     };
 
     c3_chart_fn.x = function (x) {
