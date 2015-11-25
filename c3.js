@@ -4161,6 +4161,8 @@
         var hasFocused = $$.legend.selectAll('.' + CLASS.legendItemFocused).size();
         var texts, rects, tiles, background;
 
+        var nodeOffset = typeof process === 'undefined' ? 1 : 3;
+
         options = options || {};
         withTransition = getOption(options, "withTransition", true);
         withTransitionForTransform = getOption(options, "withTransitionForTransform", true);
@@ -4242,15 +4244,24 @@
             $$.updateLegendStep(step);
         }
 
+        function getMargin(i){
+            if(margins[i] !== 'undefined'){
+                return margins[i];
+            } else {
+                return margins[0];
+            }
+        }
+
+
         if ($$.isLegendRight) {
-            xForLegend = function (id) { return maxWidth * steps[id]; };
-            yForLegend = function (id) { return margins[steps[id]] + offsets[id]; };
+            xForLegend = function (id) { return maxWidth * steps[id] - 2*nodeOffset; };
+            yForLegend = function (id) { return getMargin(steps[id]) + offsets[id]*nodeOffset };
         } else if ($$.isLegendInset) {
-            xForLegend = function (id) { return maxWidth * steps[id] + 10; };
-            yForLegend = function (id) { return margins[steps[id]] + offsets[id]; };
+            xForLegend = function (id) { return maxWidth * steps[id] + 10 - 2*nodeOffset; };
+            yForLegend = function (id) { return getMargin(steps[id]) + offsets[id]*nodeOffset; };
         } else {
-            xForLegend = function (id) { return margins[steps[id]] + offsets[id]; };
-            yForLegend = function (id) { return maxHeight * steps[id]; };
+            xForLegend = function (id) { return getMargin(steps[id]) + offsets[id]*nodeOffset; };
+            yForLegend = function (id) { return maxHeight * steps[id] - 2*nodeOffset; };
         }
         xForLegendText = function (id, i) { return xForLegend(id, i) + 14; };
         yForLegendText = function (id, i) { return yForLegend(id, i) + 9; };
