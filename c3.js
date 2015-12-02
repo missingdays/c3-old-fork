@@ -3701,12 +3701,12 @@
         $$.grid = $$.main.append('g')
             .attr("clip-path", $$.clipPathForGrid)
             .attr('class', CLASS.grid);
-        if (config.grid_x_show) {
+        //if (config.grid_x_show) {
             $$.grid.append("g").attr("class", CLASS.xgrids);
-        }
-        if (config.grid_y_show) {
+        //}
+        //if (config.grid_y_show) {
             $$.grid.append('g').attr('class', CLASS.ygrids);
-        }
+        //}
         if (config.grid_focus_show) {
             $$.grid.append('g')
                 .attr("class", CLASS.xgridFocus)
@@ -7473,7 +7473,7 @@
         var gridx = $$.xgrid[0];      
         for (var id in gridx) {
             if(gridx[id]){
-                gridx[id].style.display = "";
+                gridx[id].style.display = "block";
             }
         }
 
@@ -7514,7 +7514,7 @@
 
         var gridy = $$.ygrid[0];
         for (var id in gridy) {
-            gridy[id].style.display = "";
+            gridy[id].style.display = "block";
         }
 
         $$.updateAndRedraw({withLegend: true});

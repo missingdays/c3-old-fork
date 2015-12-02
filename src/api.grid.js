@@ -46,7 +46,7 @@ c3_chart_fn.gridX.show = function() {
     var gridx = $$.xgrid[0];      
     for (var id in gridx) {
         if(gridx[id]){
-            gridx[id].style.display = "";
+            gridx[id].style.display = "block";
         }
     }
 
@@ -87,7 +87,7 @@ c3_chart_fn.gridY.show = function() {
 
     var gridy = $$.ygrid[0];
     for (var id in gridy) {
-        gridy[id].style.display = "";
+        gridy[id].style.display = "block";
     }
 
     $$.updateAndRedraw({withLegend: true});

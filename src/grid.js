@@ -3,12 +3,12 @@ c3_chart_internal_fn.initGrid = function () {
     $$.grid = $$.main.append('g')
         .attr("clip-path", $$.clipPathForGrid)
         .attr('class', CLASS.grid);
-    if (config.grid_x_show) {
+    //if (config.grid_x_show) {
         $$.grid.append("g").attr("class", CLASS.xgrids);
-    }
-    if (config.grid_y_show) {
+    //}
+    //if (config.grid_y_show) {
         $$.grid.append('g').attr('class', CLASS.ygrids);
-    }
+    //}
     if (config.grid_focus_show) {
         $$.grid.append('g')
             .attr("class", CLASS.xgridFocus)
