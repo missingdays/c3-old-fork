@@ -4128,6 +4128,7 @@
         if (!config.legend_show) {
             config.legend_show = true;
             $$.legend.style('visibility', 'visible');
+            $$.legend.style('display', 'block');
             if (!$$.legendHasRendered) {
                 $$.updateLegendWithDefaults();
             }
@@ -4135,6 +4136,7 @@
         $$.removeHiddenLegendIds(targetIds);
         $$.legend.selectAll($$.selectorLegends(targetIds))
             .style('visibility', 'visible')
+            .style('display', 'block')
             .transition()
             .style('opacity', function () { return $$.opacityForLegend($$.d3.select(this)); });
     };
@@ -4277,6 +4279,7 @@
             .enter().append('g')
             .attr('class', function (id) { return $$.generateClass(CLASS.legendItem, id); })
             .style('visibility', function (id) { return $$.isLegendToShow(id) ? 'visible' : 'hidden'; })
+            .style('display', function(id) { return $$.isLegendToShow(id) ? 'block': 'none' })
             .style('cursor', 'pointer')
             .on('click', function (id) {
                 if (config.legend_item_onclick) {
@@ -6833,7 +6836,6 @@
                 .attr('x', x)
                 .attr('y', y);
         }
-
 
     };
 

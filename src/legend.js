@@ -87,6 +87,7 @@ c3_chart_internal_fn.showLegend = function (targetIds) {
     if (!config.legend_show) {
         config.legend_show = true;
         $$.legend.style('visibility', 'visible');
+        $$.legend.style('display', 'block');
         if (!$$.legendHasRendered) {
             $$.updateLegendWithDefaults();
         }
@@ -94,6 +95,7 @@ c3_chart_internal_fn.showLegend = function (targetIds) {
     $$.removeHiddenLegendIds(targetIds);
     $$.legend.selectAll($$.selectorLegends(targetIds))
         .style('visibility', 'visible')
+        .style('display', 'block')
         .transition()
         .style('opacity', function () { return $$.opacityForLegend($$.d3.select(this)); });
 };
@@ -236,6 +238,7 @@ c3_chart_internal_fn.updateLegend = function (targetIds, options, transitions) {
         .enter().append('g')
         .attr('class', function (id) { return $$.generateClass(CLASS.legendItem, id); })
         .style('visibility', function (id) { return $$.isLegendToShow(id) ? 'visible' : 'hidden'; })
+        .style('display', function(id) { return $$.isLegendToShow(id) ? 'block': 'none' })
         .style('cursor', 'pointer')
         .on('click', function (id) {
             if (config.legend_item_onclick) {

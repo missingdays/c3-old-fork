@@ -69,6 +69,5 @@ c3.chart.fn.redrawTitle = function(hasSubs, isSub){
             .attr('y', y);
     }
 
-
 };
 
