@@ -4,6 +4,7 @@ c3_chart_internal_fn.initLegend = function () {
     $$.legend = $$.svg.append("g").attr("transform", $$.getTranslate('legend'));
     if (!$$.config.legend_show) {
         $$.legend.style('visibility', 'hidden');
+        $$.legend.style('display', 'none');
         $$.hiddenLegendIds = $$.mapToIds($$.data.targets);
         return;
     }
@@ -101,11 +102,13 @@ c3_chart_internal_fn.hideLegend = function (targetIds) {
     if (config.legend_show && isEmpty(targetIds)) {
         config.legend_show = false;
         $$.legend.style('visibility', 'hidden');
+        $$.legend.style('display', 'none');
     }
     $$.addHiddenLegendIds(targetIds);
     $$.legend.selectAll($$.selectorLegends(targetIds))
         .style('opacity', 0)
-        .style('visibility', 'hidden');
+        .style('visibility', 'hidden')
+        .style('display', 'none');
 };
 var legendItemTextBox = {};
 c3_chart_internal_fn.clearLegendItemTextBoxCache = function () {
