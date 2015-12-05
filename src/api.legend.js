@@ -29,6 +29,6 @@ c3_chart_fn.legend.position = function(position) {
     $$.isLegendRight = position === 'right';
     $$.isLegendInset = position === 'inset';
 
-    $$.cachedRedraw({withLegend: true});
+    $$.updateAndRedraw({withLegend: true});
 };
 

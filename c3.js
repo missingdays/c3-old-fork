@@ -7782,7 +7782,7 @@
         $$.isLegendRight = position === 'right';
         $$.isLegendInset = position === 'inset';
 
-        $$.cachedRedraw({withLegend: true});
+        $$.updateAndRedraw({withLegend: true});
     };
 
 
