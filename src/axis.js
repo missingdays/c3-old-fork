@@ -587,17 +587,24 @@ c3_chart_internal_fn.findMinMax = function () {
     var minY, maxY, minX, maxX;
     var i,j, id;
 
+    // detect if we have stacked group
+    var stacked = false;
+    var groups = $$.api.groups();
+    groups.forEach(function(elem){
+        if(elem.length) {
+            stacked = true;
+        }
+    });
+
+    var stackedSum = [];
+
     var allData = $$.api.data();
     allData.forEach(function(v){
-        var data;
-        if(v){
-            data = v.values;
-        } else {
-            data = {
-                length: 0
-            };
-        }
+        if(!v)
+            return;
+        var data = v.values;
 
+        // calc min/max for X axis
         for(i = 0; i < data.length; i++) {
             if (isUndefined(maxX) || data[i].x > maxX)
                 maxX = data[i].x;
@@ -605,55 +612,29 @@ c3_chart_internal_fn.findMinMax = function () {
                 minX = data[i].x;
         }
 
-        var stacked = false;
-
-        var groups = $$.api.groups();
-
-        groups.forEach(function(elem){
-            if(elem.length){
-                stacked = true;
-            }
-        });
-
-        if(stacked){
-
-            data = $$.api.data();
-
-            var tmp = [];
-
-            for(i = 0; i < data.length; i++){
-                var tmp_seq = [];
-                var values = data[i].values;
-                values.forEach(function(value){
-                    tmp_seq.push(value);
-                });
-                tmp.push(tmp_seq);
-            }
-
-
-            for(i = 0; i < data.length; i++){
-                for(var j = 0; j < tmp[0].length; j++){
-                    var s = 0;
-                    for(var k = 0; k < tmp.length; k++){
-                        s += tmp[k][j].value;
-                    }
-                    if (isUndefined(maxY) || s > maxY){
-                        maxY = s;
-                    }
-                    if (isUndefined(minY) || s < minY){
-                        minY = s;
-                    }
-                }
-            }
-        } else {
-            for(i = 0; i < data.length; i++) {
-                if (isUndefined(maxY) || data[i].value > maxY)
-                    maxY = data[i].value;
-                if (isUndefined(minY) || data[i].value < minY)
-                    minY = data[i].value;
+        // calc min/max for Y axis
+        for(i = 0; i < data.length; i++) {
+            if (isUndefined(maxY) || data[i].value > maxY)
+                maxY = data[i].value;
+            if (isUndefined(minY) || data[i].value < minY)
+                minY = data[i].value;
+            // calc sum row for stacked
+            if (stacked) {
+                if (!stackedSum[i])
+                    stackedSum[i] = 0;
+                stackedSum[i] += data[i].value;
             }
         }
     });
+
+    if (stacked) {
+        for(i = 0; i < stackedSum.length; i++) {
+            if (isUndefined(maxY) || stackedSum[i] > maxY)
+                maxY = stackedSum[i];
+            if (isUndefined(minY) || stackedSum[i] < minY)
+                minY = stackedSum[i];
+        }
+    }
 
     return {minY: minY, maxY: maxY, minX: minX, maxX: maxX};
 };
