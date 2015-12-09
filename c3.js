@@ -1041,7 +1041,7 @@
     c3_chart_internal_fn.updateSvgSize = function () {
         var $$ = this,
             brush = $$.svg.select(".c3-brush .background");
-        $$.svg.attr('width', $$.currentWidth).attr('height', $$.currentHeight);
+        $$.svg.attr('width', $$.currentWidth + (isNode ? 10 : 0)).attr('height', $$.currentHeight); 
         $$.svg.selectAll(['#' + $$.clipId, '#' + $$.clipIdForGrid]).select('rect')
             .attr('width', $$.width)
             .attr('height', $$.height);
@@ -4268,6 +4268,7 @@
             xForLegend = function (id) { return getMargin(steps[id]) + offsets[id]*nodeOffset; };
             yForLegend = function (id) { return maxHeight * steps[id] - 2*nodeOffset; };
         }
+
         xForLegendText = function (id, i) { return xForLegend(id, i) + 14; };
         yForLegendText = function (id, i) { return yForLegend(id, i) + 9; };
         xForLegendRect = function (id, i) { return xForLegend(id, i); };
