@@ -125,7 +125,7 @@ c3_chart_internal_fn.updateLegend = function (targetIds, options, transitions) {
     var hasFocused = $$.legend.selectAll('.' + CLASS.legendItemFocused).size();
     var texts, rects, tiles, background;
 
-    var nodeOffset = isNode() ? 1 : 3;
+    var nodeOffset = isNode() ? 3 : 1;
 
     options = options || {};
     withTransition = getOption(options, "withTransition", true);
