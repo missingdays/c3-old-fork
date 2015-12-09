@@ -6494,7 +6494,7 @@
             return temp;
         },
         isNode = function(){
-            return typeof process === 'undefined';
+            return typeof process === 'object';
         };
 
 

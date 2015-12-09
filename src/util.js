@@ -112,6 +112,6 @@ var isValue = c3_chart_internal_fn.isValue = function (v) {
         return temp;
     },
     isNode = function(){
-        return typeof process === 'undefined';
+        return typeof process === 'object';
     };
 
