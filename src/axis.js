@@ -279,7 +279,8 @@ c3_chart_internal_fn.rotateTickText = function (axis, transition, rotate) {
 };
 
 c3_chart_internal_fn.getMaxTickWidth = function () {
-    return 10;
+    var $$ = this;
+    return $$.config.normalized ? 15 : 10;
 };
 
 c3_chart_internal_fn.updateAxisLabels = function (withTransition) {

@@ -4166,7 +4166,7 @@
         var hasFocused = $$.legend.selectAll('.' + CLASS.legendItemFocused).size();
         var texts, rects, tiles, background;
 
-        var nodeOffset = typeof process === 'undefined' ? 1 : 3;
+        var nodeOffset = typeof process === 'undefined' ? 1 : 5;
 
         options = options || {};
         withTransition = getOption(options, "withTransition", true);
@@ -4674,7 +4674,8 @@
     };
 
     c3_chart_internal_fn.getMaxTickWidth = function () {
-        return 10;
+        var $$ = this;
+        return $$.config.normalized ? 15 : 10;
     };
 
     c3_chart_internal_fn.updateAxisLabels = function (withTransition) {
