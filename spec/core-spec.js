@@ -42,7 +42,7 @@ describe('c3 chart', function () {
 
         it('should have same width', function () {
             var svg = d3.select('#chart svg');
-            expect(+svg.attr('width')).toBe(650);
+            expect(+svg.attr('width')).toBe(640);
         });
 
         it('should have same height', function () {

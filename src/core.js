@@ -820,7 +820,7 @@ c3_chart_internal_fn.transformAll = function (withTransition, transitions) {
 c3_chart_internal_fn.updateSvgSize = function () {
     var $$ = this,
         brush = $$.svg.select(".c3-brush .background");
-    $$.svg.attr('width', $$.currentWidth + (isNode ? 10 : 0)).attr('height', $$.currentHeight); 
+    $$.svg.attr('width', $$.currentWidth + (isNode() ? 10 : 0)).attr('height', $$.currentHeight); 
     $$.svg.selectAll(['#' + $$.clipId, '#' + $$.clipIdForGrid]).select('rect')
         .attr('width', $$.width)
         .attr('height', $$.height);
