@@ -110,5 +110,8 @@ var isValue = c3_chart_internal_fn.isValue = function (v) {
         temp.__clonedFrom = cloneObj;
 
         return temp;
+    },
+    isNode = function(){
+        return typeof process === 'undefined';
     };
 
