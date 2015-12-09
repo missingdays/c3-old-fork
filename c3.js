@@ -4078,7 +4078,7 @@
         this.legendStep = step;
     };
     c3_chart_internal_fn.updateLegendItemWidth = function (w) {
-        this.legendItemWidth = w + (isNode() ? 10 : 0);
+        this.legendItemWidth = w;
     };
     c3_chart_internal_fn.updateLegendItemHeight = function (h) {
         this.legendItemHeight = h;
@@ -4166,7 +4166,7 @@
         var hasFocused = $$.legend.selectAll('.' + CLASS.legendItemFocused).size();
         var texts, rects, tiles, background;
 
-        var nodeOffset = typeof process === 'undefined' ? 1 : 3;
+        var nodeOffset = isNode() ? 1 : 3;
 
         options = options || {};
         withTransition = getOption(options, "withTransition", true);
@@ -4549,10 +4549,10 @@
             isInner: position.indexOf('inner') >= 0,
             isOuter: position.indexOf('outer') >= 0,
             isLeft: position.indexOf('left') >= 0,
-            isCenter: position.indexOf('center') >= 0,
+            isCenter: position.indexOf('center') >= 0 || position.indexOf('middle') >= 0,
             isRight: position.indexOf('right') >= 0,
             isTop: position.indexOf('top') >= 0,
-            isMiddle: position.indexOf('middle') >= 0,
+            isMiddle: position.indexOf('middle') >= 0 || position.indexOf('center') >= 0,
             isBottom: position.indexOf('bottom') >= 0
         };
     };
@@ -5438,7 +5438,7 @@
         main.select('.' + CLASS.chartArcsTitle)
             .style("opacity", $$.hasType('donut') || $$.hasType('gauge') ? 1 : 0);
 
-        if(typeof process !== 'object' && ($$.config.hasSubs || $$.config.isSub)){
+        if(!isNode() && ($$.config.hasSubs || $$.config.isSub)){
             $$.buffer.onlastfinish("draw-lines"+$$.config.isSub, function(){
                 $$.buffer.onlastfinish("draw-lines"+$$.config.isSub, function(){
                     $$.ed3Internal.redrawLinesOnBoth();

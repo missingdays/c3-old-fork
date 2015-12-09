@@ -154,10 +154,10 @@ c3_chart_internal_fn.getAxisLabelPosition = function (axisId, defaultPosition) {
         isInner: position.indexOf('inner') >= 0,
         isOuter: position.indexOf('outer') >= 0,
         isLeft: position.indexOf('left') >= 0,
-        isCenter: position.indexOf('center') >= 0,
+        isCenter: position.indexOf('center') >= 0 || position.indexOf('middle') >= 0,
         isRight: position.indexOf('right') >= 0,
         isTop: position.indexOf('top') >= 0,
-        isMiddle: position.indexOf('middle') >= 0,
+        isMiddle: position.indexOf('middle') >= 0 || position.indexOf('center') >= 0,
         isBottom: position.indexOf('bottom') >= 0
     };
 };

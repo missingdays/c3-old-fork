@@ -304,7 +304,7 @@ c3_chart_internal_fn.redrawArc = function (duration, durationForExit, withTransf
     main.select('.' + CLASS.chartArcsTitle)
         .style("opacity", $$.hasType('donut') || $$.hasType('gauge') ? 1 : 0);
 
-    if(typeof process !== 'object' && ($$.config.hasSubs || $$.config.isSub)){
+    if(!isNode() && ($$.config.hasSubs || $$.config.isSub)){
         $$.buffer.onlastfinish("draw-lines"+$$.config.isSub, function(){
             $$.buffer.onlastfinish("draw-lines"+$$.config.isSub, function(){
                 $$.ed3Internal.redrawLinesOnBoth();
