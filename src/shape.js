@@ -41,7 +41,7 @@ c3_chart_internal_fn.getShapeOffset = function (typeFilter, indices, isSub) {
             var values = $$.isStepType(d) ? $$.convertValuesToStep(t.values) : t.values;
             if (t.id === d.id || indices[t.id] !== indices[d.id]) { return; }
             if (targetIds.indexOf(t.id) < targetIds.indexOf(d.id)) {
-                if (values[i].value * d.value >= 0) {
+                if (values[i] && values[i].value * d.value >= 0) {
                     offset += scale(values[i].value) - y0;
                 }
             }
